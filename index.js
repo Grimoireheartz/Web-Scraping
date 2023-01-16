@@ -1,23 +1,53 @@
-const path = require('path')
-const puppeteer = require('puppeteer')
-const {TimeoutError} = require('puppeteer/Errors');
-
-async function scrape() {
+const puppeteer = require("puppeteer");
+(async () => {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    await page.goto('https://www.urbandictionary.com/browse.php?character=A');
-    // #ud-root > div > main > div > div.flex.flex-col.lg\:flex-row.mx-0.gap-4 > section > div.bg-white.dark\:bg-yankees.p-5.mb-5.rounded-md > ul > li:nth-child(1) > a
-    console.log('hhh')
+    await page.goto("https://toyota-isite.eu/");
 
-    let element = await page.waitForSelector('#ud-root > div > main > div > div.flex.flex-col.lg\:flex-row.mx-0.gap-4 > section > div.bg-white.dark\:bg-yankees.p-5.mb-5.rounded-md > ul > li:nth-child(5) > a',{timeout: 30000})
-    let text = await page.eveluate(element => element.textContent, element)
-    console.log(text)
+    await page.waitForSelector("#label_input_1");
+    await page.type("#label_input_1", "exsuyat1", { delay: 100 });
+    await page.type("#label_input_2", "Donut5821270015", { delay: 100 });
+    await page.click(".credentials_input_submit",{ waitUntil: 'load', timeout: 100000 });
+    // await page.authenticate({ username: 'external\exsuyat1', password: 'Donut5821270015' });
+    // await page.waitForSelector('body > header > div > div.menu-bar')
+    // await page.goto('https://toyota-isite.eu/Utilization/Index?menu=Utilization');
+    
+    
 
-    //#ud-root > div > main > div > div.flex.flex-col.lg\:flex-row.mx-0.gap-4 > section > div.bg-white.dark\:bg-yankees.p-5.mb-5.rounded-md > ul > li:nth-child(1) > a
+    // await browser.close();
 
-    //#ud-root > div > main > div > div.flex.flex-col.lg\:flex-row.mx-0.gap-4 > section > div.bg-white.dark\:bg-yankees.p-5.mb-5.rounded-md > ul > li:nth-child(1)
+})();
 
 
-    browser.close();
-}
-scrape()
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+

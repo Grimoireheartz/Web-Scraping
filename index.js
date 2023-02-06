@@ -1,34 +1,36 @@
 const puppeteer = require("puppeteer");
-// const { hostname } = require('os');
-// const path = require('path');
+const { hostname } = require('os');
+const path = require('path');
 var mysql = require('mysql');
 
-// const scapeinfiniscroll = async (page, itemTargetCount) => {
-//   let items = [];
-//   while (itemTargetCount > items.length) {
-//     items = await page.evaluate(() => {
-//       const items = Array.from(document.querySelectorAll("#resultItems > div > div"));
-//       return items.map((item) => item.innerText);
-//     });
+const scapeinfiniscroll = async (page, itemTargetCount) => {
+    let items = [];
+    while (itemTargetCount > items.length) {
+        items = await page.evaluate(() => {
+            const items = Array.from(document.querySelectorAll("#resultItems > div > div"));
+            return items.map((item) => item.innerText);
+        });
 
-//     previousHeight = await page.evaluate("document.body.scrollHeight");
-//     await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
-//     await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
-//     await new Promise((resolve) => setTimeout(resolve, 2000));
-//     console.log(items.length);
+        previousHeight = await page.evaluate("document.body.scrollHeight");
+        await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
+        await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
+        await new Promise((resolve) => setTimeout(resolve, 2000));
+        console.log(items.length);
 
-//   }
-// }
+    }
+}
 
 (async () => {
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
-    // await page.setRequestInterception(true);
-    // page.on('request', (interceptedRequest) => {
-    //     if (interceptedRequest.isInterceptResolutionHandled()) return;
+    await page.setDefaultNavigationTimeout(0);
 
-    //     else interceptedRequest.continue();
-    // });
+    await page.setRequestInterception(true);
+    page.on('request', (interceptedRequest) => {
+        if (interceptedRequest.isInterceptResolutionHandled()) return;
+
+        else interceptedRequest.continue();
+    });
 
 
     await page.goto("https://toyota-isite.eu/");
@@ -79,45 +81,61 @@ var mysql = require('mysql');
     //   let familyData = ''
     //   let modelData = ''
     //   let lastupdateData = ''
-
-
-    //   await scapeinfiniscroll(page, 100)
-    //   while (countdata < 100) {
-    countitemflesh++
-
     var text_cusSite = [];
     var SerialMachine = [];
     var OperatingTime = [];
     var Utilization = [];
     var City = [];
 
-    for (let i = 1; i <= 10; i++) {
-        countdata++;
-        if (countdata <= 10) {
-            let element_cusSite = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`)
-            text_cusSite[i] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
-            text_cusSite[i] = text_cusSite[i].replace(/\s/g, '');
-            text_cusSite[i] = text_cusSite[i].replace('Site:', '');
-            // console.log(text_cusSite);
+    await scapeinfiniscroll(page, 1140)
+    while (countdata < 1140) {
+        countitemflesh++
+        for (let i = 1; i <= 20; i++) {
+            countdata++;
+            if (countdata <= 20) {
+                let element_cusSite = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`)
+                text_cusSite[i] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
+                text_cusSite[i] = text_cusSite[i].replace(/\s/g, '');
+                text_cusSite[i] = text_cusSite[i].replace('Site:', '');
 
-            let element_SerialMachine = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`)
-            SerialMachine[i] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
+                let element_SerialMachine = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`)
+                SerialMachine[i] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
 
-            let element_OperatingTime = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
-            OperatingTime[i] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
+                let element_OperatingTime = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
+                OperatingTime[i] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
 
-            let elemant_Utilization = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`)
-            Utilization[i] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization) 
+                let elemant_Utilization = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`)
+                Utilization[i] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
 
-            let element_City = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`)
-            City[i] = await page.evaluate(element_City => element_City.textContent, element_City)
-            City[i] = City[i].replace(/\s/g, '');
-            City[i] = City[i].replace('City:', '');
+                let element_City = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`)
+                City[i] = await page.evaluate(element_City => element_City.textContent, element_City)
+                City[i] = City[i].replace(/\s/g, '');
+                City[i] = City[i].replace('City:', '');
 
 
+            }
+            else if (countdata > 20) {
+                let element_cusSite = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`)
+                text_cusSite[i] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
+                text_cusSite[i] = text_cusSite[i].replace(/\s/g, '');
+                text_cusSite[i] = text_cusSite[i].replace('Site:', '');
+
+                let element_SerialMachine = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`)
+                SerialMachine[i] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
+
+                let element_OperatingTime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
+                OperatingTime[i] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
+
+                let elemant_Utilization = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`)
+                Utilization[i] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
+
+                let element_City = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`)
+                City[i] = await page.evaluate(element_City => element_City.textContent, element_City)
+                City[i] = City[i].replace(/\s/g, '');
+                City[i] = City[i].replace('City:', '');
+            }
         }
     }
-
 
     var con = mysql.createConnection({
         host: "localhost",
@@ -130,9 +148,8 @@ var mysql = require('mysql');
     con.connect(function (err) {
         if (err) throw err;
         console.log("Connected!");
-        for (let i = 1; i < 10; i++) {
+        for (let i = 1; i <= 1139; i++) {
             var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[i]}', '${SerialMachine[i]}','${OperatingTime[i]}','${Utilization[i]}','${City[i]}')`;
-            // VALUES ('$serialMachine','$cusSite','$utilizationData')
             con.query(sql, function (err, result) {
                 if (err) throw err;
                 console.log("1 record inserted");
@@ -140,44 +157,7 @@ var mysql = require('mysql');
         }
     });
 
-    //     for (let i = 1; i <= 20; i++) {
 
-    //       countdata++;
-
-    //       if (countdata <= 20) {
-    // let element = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span > a`)
-    // let text = await page.evaluate(element => element.textContent, element)
-
-    // let element_operatiomtime = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
-    // let text_operatiomtime = await page.evaluate(element_operatiomtime => element_operatiomtime.textContent, element_operatiomtime)
-
-    //         let element_utilize = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`)
-    //         let text_utilize = await page.evaluate(element_utilize => element_utilize.textContent, element_utilize)
-
-    //         let element_cussite = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`)
-    //         let text_cussite = await page.evaluate(element_cussite => element_cussite.textContent, element_cussite)
-    //         text_cussite = text_cussite.replace(/\s/g, '');
-    //         text_cussite = text_cussite.replace('Site:', '');
-
-    //         let element_contracttype = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(4)`)
-    //         let text_contracttype = await page.evaluate(element_contracttype => element_contracttype.textContent, element_contracttype)
-    //         text_contracttype = text_contracttype.replace(/\s/g, '');
-    //         text_contracttype = text_contracttype.replace('Owner:', '');
-
-    //         let element_family = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(5)`)
-    //         let text_family = await page.evaluate(element_family => element_family.textContent, element_family)
-    //         text_family = text_family.replace(/\s/g, '');
-    //         text_family = text_family.replace('MachineFamily:', '');
-
-    //         let element_model = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(6)`)
-    //         let text_model = await page.evaluate(element_model => element_model.textContent, element_model)
-    //         text_model = text_model.replace(/\s/g, '');
-    //         text_model = text_model.replace('Model:', '');
-
-    //         let element_lastupdate = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(9)`)
-    //         let text_lastupdate = await page.evaluate(element_lastupdate => element_lastupdate.textContent, element_lastupdate)
-    //         text_lastupdate = text_lastupdate.replace(/\s/g, '');
-    //         text_lastupdate = text_lastupdate.replace('LastUpdated:', '');
 
     //         serialMachine += text + ','
     //         cusSite += text_cussite + ','
@@ -197,41 +177,7 @@ var mysql = require('mysql');
 
 
 
-    //       else if (countdata > 20) {
-
-    //         let element = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span > a`)
-    //         let text = await page.evaluate(element => element.textContent, element)
-
-    //         let element_operatiomtime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
-    //         let text_operatiomtime = await page.evaluate(element_operatiomtime => element_operatiomtime.textContent, element_operatiomtime)
-
-    //         let element_utilize = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`)
-    //         let text_utilize = await page.evaluate(element_utilize => element_utilize.textContent, element_utilize)
-
-    //         let element_cussite = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`)
-    //         let text_cussite = await page.evaluate(element_cussite => element_cussite.textContent, element_cussite)
-    //         text_cussite = text_cussite.replace(/\s/g, '');
-    //         text_cussite = text_cussite.replace('Site:', '');
-
-    //         let element_contracttype = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(4)`)
-    //         let text_contracttype = await page.evaluate(element_contracttype => element_contracttype.textContent, element_contracttype)
-    //         text_contracttype = text_contracttype.replace(/\s/g, '');
-    //         text_contracttype = text_contracttype.replace('Owner:', '');
-
-    //         let element_family = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(5)`)
-    //         let text_family = await page.evaluate(element_family => element_family.textContent, element_family)
-    //         text_family = text_family.replace(/\s/g, '');
-    //         text_family = text_family.replace('MachineFamily:', '');
-
-    //         let element_model = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(6)`)
-    //         let text_model = await page.evaluate(element_model => element_model.textContent, element_model)
-    //         text_model = text_model.replace(/\s/g, '');
-    //         text_model = text_model.replace('Model:', '');
-
-    //         let element_lastupdate = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(9)`)
-    //         let text_lastupdate = await page.evaluate(element_lastupdate => element_lastupdate.textContent, element_lastupdate)
-    //         text_lastupdate = text_lastupdate.replace(/\s/g, '');
-    //         text_lastupdate = text_lastupdate.replace('LastUpdated:', '');
+    //       
 
     // serialMachine += text + ','
     // cusSite += text_cusSite + ','

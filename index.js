@@ -2,10 +2,13 @@ const puppeteer = require("puppeteer");
 const { hostname } = require('os');
 const path = require('path');
 var mysql = require('mysql');
+const { Console } = require("console");
 
 const scapeinfiniscroll = async (page, itemTargetCount) => {
     let items = [];
-    while (itemTargetCount > items.length) {
+    while ((itemTargetCount - 1) >= items.length) {
+        // console.log("Count before=>"+items.length);
+
         items = await page.evaluate(() => {
             const items = Array.from(document.querySelectorAll("#resultItems > div > div"));
             return items.map((item) => item.innerText);
@@ -18,6 +21,7 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
         console.log(items.length);
 
     }
+    console.log("finished looping");
 }
 
 (async () => {
@@ -87,9 +91,10 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
     var Utilization = [];
     var City = [];
 
-    await scapeinfiniscroll(page, 1140)
-    while (countdata < 1140) {
-        countitemflesh++
+    const items = await scapeinfiniscroll(page, 1139)
+    while (countdata <= 1139) {
+        countitemflesh++;
+        console.log("count=>" + countitemflesh);
         for (let i = 1; i <= 20; i++) {
             countdata++;
             if (countdata <= 20) {
@@ -119,20 +124,35 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                 text_cusSite[i] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
                 text_cusSite[i] = text_cusSite[i].replace(/\s/g, '');
                 text_cusSite[i] = text_cusSite[i].replace('Site:', '');
+                if (element_cusSite !== false) {
+                    continue;
+                }
 
                 let element_SerialMachine = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`)
                 SerialMachine[i] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
+                if (element_SerialMachine !== false) {
+                    continue;
+                }
 
                 let element_OperatingTime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
                 OperatingTime[i] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
+                if (element_OperatingTime !== false) {
+                    continue;
+                }
 
                 let elemant_Utilization = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`)
                 Utilization[i] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
+                if (elemant_Utilization !== false) {
+                    continue;
+                }
 
                 let element_City = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`)
                 City[i] = await page.evaluate(element_City => element_City.textContent, element_City)
                 City[i] = City[i].replace(/\s/g, '');
                 City[i] = City[i].replace('City:', '');
+                if (element_City !== false) {
+                    continue;
+                }
             }
         }
     }
@@ -152,7 +172,7 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[i]}', '${SerialMachine[i]}','${OperatingTime[i]}','${Utilization[i]}','${City[i]}')`;
             con.query(sql, function (err, result) {
                 if (err) throw err;
-                console.log("1 record inserted");
+                // console.log("1 record inserted");
             });
         }
     });

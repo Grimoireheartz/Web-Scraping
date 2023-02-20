@@ -85,14 +85,16 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
     var Utilization = [];
     var City = [];
 
-    // #resultItems > div:nth-child(2) > div:nth-child(3) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span > a
-
     const items = await scapeinfiniscroll(page, 1139)
     while (countdata <= 1119) {
         countitemflesh++;
-        console.log("count=>" + countitemflesh);
+        // console.log("count=>" + countitemflesh);
         for (let i = 1; i <= 20; i++) {
             countdata++;
+            console.log("countdatai===>"+i);
+            console.log("count=>" + countitemflesh);
+            console.log(text_cusSite[i]);
+            // console.log(SerialMachine[i]);
             console.log(countdata)
             if (countdata <= 1119) {
 
@@ -101,6 +103,7 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                     text_cusSite[i] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
                     text_cusSite[i] = text_cusSite[i].replace(/\s/g, '');
                     text_cusSite[i] = text_cusSite[i].replace('Site:', '');
+                    console.log(text_cusSite[i]);
 
                     let element_SerialMachine = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`)
                     SerialMachine[i] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
@@ -126,11 +129,13 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                     if (element_cusSite !== false) {
                         continue;
                     }
+                    console.log(text_cusSite[i]);
                     let element_SerialMachine = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`)
                     SerialMachine[i] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
                     if (element_SerialMachine !== false) {
                         continue;
                     }
+                    console.log(SerialMachine[i]);
                     let element_OperatingTime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
                     OperatingTime[i] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
                     if (element_OperatingTime !== false) {
@@ -168,13 +173,23 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
     con.connect(function (err) {
         if (err) throw err;
         console.log("Connected!");
-        for (let x = 1; x <= 1119; x++) {
-            var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[x]}', '${SerialMachine[x]}','${OperatingTime[x]}','${Utilization[x]}','${City[x]}')`;
-            con.query(sql, function (err, result) {
-                if (err) throw err;
-                // console.log("1 record inserted");
-            });
+        let countdata = 0;
+        while (countdata <= 1119) {
+            for (let i = 1; i <= 20; i++) {
+                countdata++;
+                if (countdata <= 20) {
+                var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[i]}', '${SerialMachine[i]}','${OperatingTime[i]}','${Utilization[i]}','${City[i]}')`;
+                }
+                else if (countdata > 20)  {
+                var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[i]}', '${SerialMachine[i]}','${OperatingTime[i]}','${Utilization[i]}','${City[i]}')`;
+                }
+                con.query(sql, function (err, result) {
+                    if (err) throw err;
+                    //  console.log(text_cusSite[i]);
+                });
+            }
         }
+       
     });
 
 

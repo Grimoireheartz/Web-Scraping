@@ -78,7 +78,6 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
     let countitemflesh = 1;
     let countdata = 0;
 
-
     var text_cusSite = [];
     var SerialMachine = [];
     var OperatingTime = [];
@@ -88,38 +87,34 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
     const items = await scapeinfiniscroll(page, 1139)
     while (countdata <= 1119) {
         countitemflesh++;
-        // console.log("count=>" + countitemflesh);
         for (let i = 1; i <= 20; i++) {
             countdata++;
-            console.log("countdatai===>"+i);
-            console.log("count=>" + countitemflesh);
-            console.log(text_cusSite[i]);
+            // console.log(text_cusSite[i]);
             // console.log(SerialMachine[i]);
+            // console.log("countdatai===>"+i);
+            console.log("count=>" + countitemflesh);
+            parseInt(countdata);
             console.log(countdata)
             if (countdata <= 1119) {
-
                 if (countdata <= 20) {
-                    let element_cusSite = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`)
+                    let element_cusSite = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`)
                     text_cusSite[i] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
                     text_cusSite[i] = text_cusSite[i].replace(/\s/g, '');
                     text_cusSite[i] = text_cusSite[i].replace('Site:', '');
-                    console.log(text_cusSite[i]);
 
-                    let element_SerialMachine = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`)
+                    let element_SerialMachine = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span > a`)
                     SerialMachine[i] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
 
-                    let element_OperatingTime = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
+                    let element_OperatingTime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
                     OperatingTime[i] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
 
-                    let elemant_Utilization = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`)
+                    let elemant_Utilization = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`)
                     Utilization[i] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
 
-                    let element_City = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`)
+                    let element_City = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`)
                     City[i] = await page.evaluate(element_City => element_City.textContent, element_City)
                     City[i] = City[i].replace(/\s/g, '');
                     City[i] = City[i].replace('City:', '');
-
-
                 }
                 else if (countdata > 20) {
                     let element_cusSite = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`)
@@ -155,7 +150,8 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                     }
                 }
 
-            }else{
+            }
+            else {
                 console.log("Get data over")
             }
 
@@ -178,18 +174,17 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             for (let i = 1; i <= 20; i++) {
                 countdata++;
                 if (countdata <= 20) {
-                var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[i]}', '${SerialMachine[i]}','${OperatingTime[i]}','${Utilization[i]}','${City[i]}')`;
+                    var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[i]}', '${SerialMachine[i]}','${OperatingTime[i]}','${Utilization[i]}','${City[i]}')`;
                 }
-                else if (countdata > 20)  {
-                var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[i]}', '${SerialMachine[i]}','${OperatingTime[i]}','${Utilization[i]}','${City[i]}')`;
+                else if (countdata > 20) {
+                    var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[i]}', '${SerialMachine[i]}','${OperatingTime[i]}','${Utilization[i]}','${City[i]}')`;
                 }
                 con.query(sql, function (err, result) {
                     if (err) throw err;
-                    //  console.log(text_cusSite[i]);
                 });
             }
         }
-       
+
     });
 
 

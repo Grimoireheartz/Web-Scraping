@@ -85,13 +85,13 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
     var City = [];
 
     const items = await scapeinfiniscroll(page, text_total)
-    while (countdata <= 1139) {
+    while (countdata <= 100) {
         countitemflesh++;
         for (let i = 1; i <= 20; i++) {
             countdata++;
             console.log("count=>" + countitemflesh);
             console.log(countdata)
-            if (countdata <= 1139) {
+            if (countdata <= 100) {
                 if (countdata <= 20) {
                     let element_cusSite = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`, { timeout: 1000 })
                     text_cusSite[i] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
@@ -182,7 +182,7 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
         console.log(OperatingTime);
         console.log(Utilization);
         console.log(City);
-        while (countdata <= 1139) {
+        while (countdata <= 100) {
             countdata++;
             if (countdata <= 20) {
                 var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[countdata]}', '${SerialMachine[countdata]}','${OperatingTime[countdata]}','${Utilization[countdata]}','${City[countdata]}')`;

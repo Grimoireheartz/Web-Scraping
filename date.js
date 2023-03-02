@@ -24,6 +24,27 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
 }
 
 (async () => {
+
+    // let endDate = new Date(); // กำหนดวันที่เป็นวันปัจจุบัน
+    // let days = 7; // กำหนดจำนวนวันที่ต้องการวนลูป
+
+    // for (let i = 0; i < days; i++) {
+    //     endDate.setDate(endDate.getDate() - 1); // ลดวันที่ลง 1 วัน
+    //     console.log(endDate.toLocaleDateString()); // แสดงผลลัพธ์เป็นวันที่ในรูปแบบท้องถิ่น
+    // }
+
+
+
+
+    // function getPreviousDay(date = new Date()) {
+    //     const previous = new Date(date.getTime());
+    //     previous.setDate(date.getDate() - 1);
+
+    //     return previous.toLocaleDateString();
+    // }
+
+    // console.log('previous==>' + getPreviousDay());
+
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.setDefaultNavigationTimeout(0);
@@ -44,14 +65,16 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
     await page.authenticate({ username: 'external\exsuyat1', password: 'Donut5821270015' });
 
 
+
     let currentDate = new Date().toLocaleDateString();
-    let daysToSubtract = 1;
     console.log(currentDate);
+    let endDate = new Date(); // กำหนดวันที่เป็นวันปัจจุบัน
+    let days = 7; // กำหนดจำนวนวันที่ต้องการวนลูป
 
 
-    for (let x = 1; x <= 5; x++) {
+    for (let x = 1; x < days; x++) {
 
-        if (x <= 1); {
+        if (x <= 1) {
             await page.waitForSelector('body > header > div > div.menu-bar')
             await page.goto('https://toyota-isite.eu/Utilization/Index?menu=Utilization');
             await page.focus('#fromDate');
@@ -73,9 +96,22 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             await page.click('#searchButton', { delay: 50 })
             await page.waitForSelector('#searchResultContainer > div.search-top-container > div > div.searchResultSummary > div.total-summary');
         }
+
         if (x > 1) {
-            currentDate = currentDate(currentDate.getDate() - 1);
-            console.log(currentDate);
+
+
+            endDate.setDate(endDate.getDate() - 1); // ลดวันที่ลง 1 วัน
+            console.log(endDate.toLocaleDateString());
+
+
+            // function getPreviousDay(date = new Date()) {
+            //     const previous = new Date(date.getTime());
+            //     previous.setDate(date.getDate() - 1);
+
+            //     return previous.toLocaleDateString();
+            // }
+
+            // console.log('previous==>' + getPreviousDay());
             await page.waitForSelector('body > header > div > div.menu-bar')
             await page.goto('https://toyota-isite.eu/Utilization/Index?menu=Utilization');
             await page.focus('#fromDate');
@@ -83,21 +119,21 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             await page.keyboard.press('A');
             await page.keyboard.up('Control');
             await page.keyboard.press('Backspace');
-            await page.type('#fromDate', currentDate, { delay: 50 })
+            await page.type('#fromDate', endDate.toLocaleDateString(), { delay: 50 })
 
             await page.focus('#endDate');
             await page.keyboard.down('Control');
             await page.keyboard.press('A');
             await page.keyboard.up('Control');
             await page.keyboard.press('Backspace');
-            await page.type('#endDate', currentDate, { delay: 50 })
+            await page.type('#endDate', endDate.toLocaleDateString(), { delay: 50 })
             await page.click('#SiteSelectorAction', { delay: 50 })
             await page.click('#selectAllSites', { delay: 50 })
             await page.click('.dimmedCaption', { delay: 50 })
             await page.click('#searchButton', { delay: 50 })
             await page.waitForSelector('#searchResultContainer > div.search-top-container > div > div.searchResultSummary > div.total-summary');
-        }
 
+        }
 
         let element_total = await page.waitForSelector(`#totalsummary_Machines > span.total-summary__summary-item-value`)
         let text_total = await page.evaluate(element_total => element_total.textContent, element_total)

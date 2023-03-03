@@ -25,14 +25,6 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
 
 (async () => {
 
-    // let endDate = new Date(); // กำหนดวันที่เป็นวันปัจจุบัน
-    // let days = 7; // กำหนดจำนวนวันที่ต้องการวนลูป
-
-    // for (let i = 0; i < days; i++) {
-    //     endDate.setDate(endDate.getDate() - 1); // ลดวันที่ลง 1 วัน
-    //     console.log(endDate.toLocaleDateString()); // แสดงผลลัพธ์เป็นวันที่ในรูปแบบท้องถิ่น
-    // }
-
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
     await page.setDefaultNavigationTimeout(0);
@@ -64,7 +56,7 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
 
         if (x <= 1) {
             await page.waitForSelector('body > header > div > div.menu-bar')
-            await page.goto('https://toyota-isite.eu/Utilization/Index?menu=Utilization');
+            await page.goto('https://toyota-isite.eu/Utilization/Driver?menu=Utilization');
             await page.focus('#fromDate');
             await page.keyboard.down('Control');
             await page.keyboard.press('A');
@@ -89,7 +81,7 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             endDate.setDate(endDate.getDate() - 1); // ลดวันที่ลง 1 วัน
             console.log(endDate.toLocaleDateString());
             await page.waitForSelector('body > header > div > div.menu-bar')
-            await page.goto('https://toyota-isite.eu/Utilization/Index?menu=Utilization');
+            await page.goto('https://toyota-isite.eu/Utilization/Driver?menu=Utilization');
             await page.focus('#fromDate');
             await page.keyboard.down('Control');
             await page.keyboard.press('A');
@@ -111,7 +103,7 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
 
         }
 
-        let element_total = await page.waitForSelector(`#totalsummary_Machines > span.total-summary__summary-item-value`)
+        let element_total = await page.waitForSelector(`#totalsummary_Drivers > span.total-summary__summary-item-value`)
         let text_total = await page.evaluate(element_total => element_total.textContent, element_total)
         text_total = parseInt(text_total)
         console.log('Total=>' + text_total)
@@ -121,10 +113,12 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
         let countitemflesh = 0;
         let countdata = 0;
 
-        var text_cusSite = [];
-        var SerialMachine = [];
-        var OperatingTime = [];
+        var Driver = [];
+        var ExpectedHours = [];
+        var OpTime = [];
         var Utilization = [];
+        var HighShocks = [];
+        var Site = [];
         var City = [];
 
 
@@ -137,19 +131,31 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                 console.log(countdata)
                 if (countdata <= text_total) {
                     if (countdata <= 20) {
-                        let element_cusSite = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`, { timeout: 1000 })
-                        text_cusSite[i] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
-                        text_cusSite[i] = text_cusSite[i].replace(/\s/g, '');
-                        text_cusSite[i] = text_cusSite[i].replace('Site:', '');
+                        let element_Driver = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div.column260.first-column > span > a`, { timeout: 1000 })
+                        Driver[i] = await page.evaluate(element_Driver => element_Driver.textContent, element_Driver)
 
-                        let element_SerialMachine = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span > a`, { timeout: 1000 })
-                        SerialMachine[i] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
 
-                        let element_OperatingTime = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`, { timeout: 1000 })
-                        OperatingTime[i] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
+                        let element_ExpectedHours = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(2) > span`, { timeout: 1000 })
+                        ExpectedHours[i] = await page.evaluate(element_ExpectedHours => element_ExpectedHours.textContent, element_ExpectedHours)
 
-                        let elemant_Utilization = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`, { timeout: 1000 })
+
+                        let element_OpTime = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(3) > span > a`, { timeout: 1000 })
+                        OpTime[i] = await page.evaluate(element_OpTime => element_OpTime.textContent, element_OpTime)
+
+
+                        let elemant_Utilization = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(4) > span`, { timeout: 1000 })
                         Utilization[i] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
+
+
+                        let elemant_HighShocks = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(5) > span`, { timeout: 1000 })
+                        HighShocks[i] = await page.evaluate(elemant_HighShocks => elemant_HighShocks.textContent, elemant_HighShocks)
+
+
+                        let element_Site = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`, { timeout: 1000 })
+                        Site[i] = await page.evaluate(element_Site => element_Site.textContent, element_Site)
+                        Site[i] = Site[i].replace(/\s/g, '');
+                        Site[i] = Site[i].replace('Site:', '');
+
 
                         let element_City = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`, { timeout: 1000 })
                         City[i] = await page.evaluate(element_City => element_City.textContent, element_City)
@@ -157,37 +163,45 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                         City[i] = City[i].replace('City:', '');
 
                         console.log("countdatai===>" + i);
-                        console.log(text_cusSite[i]);
-                        console.log(SerialMachine[i]);
+                        console.log(Driver[i]);
+                        console.log(Site[i]);
 
                     }
 
                     else if (countdata > 20) {
                         try {
-                            let element_cusSite = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`, { timeout: 1000 })
-                            text_cusSite[countdata] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
-                            text_cusSite[countdata] = text_cusSite[countdata].replace(/\s/g, '');
-                            text_cusSite[countdata] = text_cusSite[countdata].replace('Site:', '');
-                            console.log(text_cusSite[countdata]);
+                            let element_Driver = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div.column260.first-column > span > a`, { timeout: 1000 })
+                            Driver[countdata] = await page.evaluate(element_Driver => element_Driver.textContent, element_Driver)
+                            console.log(Driver[countdata]);
 
-                            let element_SerialMachine = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`, { timeout: 1000 })
-                            SerialMachine[countdata] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
-                            console.log(SerialMachine[countdata]);
 
-                            let element_OperatingTime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`, { timeout: 1000 })
-                            OperatingTime[countdata] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
-                            console.log(OperatingTime[countdata]);
+                            let element_ExpectedHours = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(2) > span`, { timeout: 1000 })
+                            ExpectedHours[countdata] = await page.evaluate(element_ExpectedHours => element_ExpectedHours.textContent, element_ExpectedHours)
+                            console.log(ExpectedHours[countdata]);
 
-                            let elemant_Utilization = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`, { timeout: 1000 })
+                            let element_OpTime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(3) > span > a`, { timeout: 1000 })
+                            OpTime[countdata] = await page.evaluate(element_OpTime => element_OpTime.textContent, element_OpTime)
+                            console.log(OpTime[countdata]);
+
+                            let elemant_Utilization = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(4) > span`, { timeout: 1000 })
                             Utilization[countdata] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
                             console.log(Utilization[countdata]);
+
+                            let elemant_HighShocks = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(5) > span > a`, { timeout: 1000 })
+                            HighShocks[countdata] = await page.evaluate(elemant_HighShocks => elemant_HighShocks.textContent, elemant_HighShocks)
+                            console.log(HighShocks[countdata]);
+
+                            let element_Site = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`, { timeout: 1000 })
+                            Site[countdata] = await page.evaluate(element_Site => element_Site.textContent, element_Site)
+                            Site[countdata] = Site[countdata].replace(/\s/g, '');
+                            Site[countdata] = Site[countdata].replace('Site:', '');
+                            console.log(Site[countdata]);
 
                             let element_City = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`, { timeout: 1000 })
                             City[countdata] = await page.evaluate(element_City => element_City.textContent, element_City)
                             City[countdata] = City[countdata].replace(/\s/g, '');
                             City[countdata] = City[countdata].replace('City:', '');
                             console.log(City[countdata]);
-
 
                         } catch (error) {
                             continue;
@@ -215,18 +229,20 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             if (err) throw err;
             console.log("Connected!");
             let countdata = 0;
-            console.log(text_cusSite);
-            console.log(SerialMachine);
-            console.log(OperatingTime);
+            console.log(Driver);
+            console.log(ExpectedHours);
+            console.log(OpTime);
             console.log(Utilization);
+            console.log(HighShocks);
+            console.log(Site);
             console.log(City);
             while (countdata <= text_total) {
                 countdata++;
                 if (countdata <= 20) {
-                    var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[countdata]}', '${SerialMachine[countdata]}','${OperatingTime[countdata]}','${Utilization[countdata]}','${City[countdata]}')`;
+                    var sql = `INSERT INTO driveuti (Driver, ExpectedHours,OpTime,Utilization,HighShocks,Site,City) VALUES ('${Driver[countdata]}', '${ExpectedHours[countdata]}','${OpTime[countdata]}','${Utilization[countdata]}','${HighShocks[countdata]}','${Site[countdata]}','${City[countdata]}')`;
                 }
                 else if (countdata > 20) {
-                    var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[countdata]}', '${SerialMachine[countdata]}','${OperatingTime[countdata]}','${Utilization[countdata]}','${City[countdata]}')`;
+                    var sql = `INSERT INTO driveuti (Driver, ExpectedHours,OpTime,Utilization,HighShocks,Site,City) VALUES ('${Driver[countdata]}', '${ExpectedHours[countdata]}','${OpTime[countdata]}','${Utilization[countdata]}','${HighShocks[countdata]}','${Site[countdata]}','${City[countdata]}')`;
                 }
                 con.query(sql, function (err, result) {
                     if (err) throw err;

@@ -7,7 +7,6 @@ const { Console } = require("console");
 const scapeinfiniscroll = async (page, itemTargetCount) => {
     let items = [];
     while ((itemTargetCount - 1) >= items.length) {
-        // console.log("Count before=>"+items.length);
 
         items = await page.evaluate(() => {
             const items = Array.from(document.querySelectorAll("#resultItems > div > div"));
@@ -24,14 +23,6 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
 }
 
 (async () => {
-
-    // let endDate = new Date(); // กำหนดวันที่เป็นวันปัจจุบัน
-    // let days = 7; // กำหนดจำนวนวันที่ต้องการวนลูป
-
-    // for (let i = 0; i < days; i++) {
-    //     endDate.setDate(endDate.getDate() - 1); // ลดวันที่ลง 1 วัน
-    //     console.log(endDate.toLocaleDateString()); // แสดงผลลัพธ์เป็นวันที่ในรูปแบบท้องถิ่น
-    // }
 
     const browser = await puppeteer.launch({ headless: false });
     const page = await browser.newPage();
@@ -52,13 +43,9 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
     await page.click(".credentials_input_submit", { waitUntil: 'load', timeout: 100000 });
     await page.authenticate({ username: 'external\exsuyat1', password: 'Donut5821270015' });
 
-
-
-    let currentDate = new Date().toLocaleDateString();
-    console.log(currentDate);
-    let endDate = new Date(); // กำหนดวันที่เป็นวันปัจจุบัน
-    let days = 7; // กำหนดจำนวนวันที่ต้องการวนลูป
-
+    let currentDate = new Date();
+    console.log(currentDate.toLocaleDateString());
+    let days = 3;
 
     for (let x = 1; x < days; x++) {
 
@@ -70,14 +57,14 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             await page.keyboard.press('A');
             await page.keyboard.up('Control');
             await page.keyboard.press('Backspace');
-            await page.type('#fromDate', currentDate, { delay: 50 })
+            await page.type('#fromDate', currentDate.toLocaleDateString(), { delay: 50 })
 
             await page.focus('#endDate');
             await page.keyboard.down('Control');
             await page.keyboard.press('A');
             await page.keyboard.up('Control');
             await page.keyboard.press('Backspace');
-            await page.type('#endDate', currentDate, { delay: 50 })
+            await page.type('#endDate', currentDate.toLocaleDateString(), { delay: 50 })
             await page.click('#SiteSelectorAction', { delay: 50 })
             await page.click('#selectAllSites', { delay: 50 })
             await page.click('.dimmedCaption', { delay: 50 })
@@ -86,8 +73,8 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
         }
 
         if (x > 1) {
-            endDate.setDate(endDate.getDate() - 1); // ลดวันที่ลง 1 วัน
-            console.log(endDate.toLocaleDateString());
+            currentDate.setDate(currentDate.getDate() - 1);
+            console.log(currentDate.toLocaleDateString());
             await page.waitForSelector('body > header > div > div.menu-bar')
             await page.goto('https://toyota-isite.eu/Utilization/Index?menu=Utilization');
             await page.focus('#fromDate');
@@ -95,14 +82,14 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             await page.keyboard.press('A');
             await page.keyboard.up('Control');
             await page.keyboard.press('Backspace');
-            await page.type('#fromDate', endDate.toLocaleDateString(), { delay: 50 })
+            await page.type('#fromDate', currentDate.toLocaleDateString(), { delay: 50 })
 
             await page.focus('#endDate');
             await page.keyboard.down('Control');
             await page.keyboard.press('A');
             await page.keyboard.up('Control');
             await page.keyboard.press('Backspace');
-            await page.type('#endDate', endDate.toLocaleDateString(), { delay: 50 })
+            await page.type('#endDate', currentDate.toLocaleDateString(), { delay: 50 })
             await page.click('#SiteSelectorAction', { delay: 50 })
             await page.click('#selectAllSites', { delay: 50 })
             await page.click('.dimmedCaption', { delay: 50 })
@@ -117,7 +104,6 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
         console.log('Total=>' + text_total)
 
 
-
         let countitemflesh = 0;
         let countdata = 0;
 
@@ -126,7 +112,6 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
         var OperatingTime = [];
         var Utilization = [];
         var City = [];
-
 
         await scapeinfiniscroll(page, text_total)
         while (countdata <= text_total) {
@@ -156,10 +141,7 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                         City[i] = City[i].replace(/\s/g, '');
                         City[i] = City[i].replace('City:', '');
 
-                        console.log("countdatai===>" + i);
-                        console.log(text_cusSite[i]);
-                        console.log(SerialMachine[i]);
-
+                        console.log(currentDate.toLocaleString());
                     }
 
                     else if (countdata > 20) {
@@ -168,27 +150,27 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                             text_cusSite[countdata] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
                             text_cusSite[countdata] = text_cusSite[countdata].replace(/\s/g, '');
                             text_cusSite[countdata] = text_cusSite[countdata].replace('Site:', '');
-                            console.log(text_cusSite[countdata]);
+                            // console.log(text_cusSite[countdata]);
 
                             let element_SerialMachine = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`, { timeout: 1000 })
                             SerialMachine[countdata] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
-                            console.log(SerialMachine[countdata]);
+                            // console.log(SerialMachine[countdata]);
 
                             let element_OperatingTime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`, { timeout: 1000 })
                             OperatingTime[countdata] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
-                            console.log(OperatingTime[countdata]);
+                            // console.log(OperatingTime[countdata]);
 
                             let elemant_Utilization = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`, { timeout: 1000 })
                             Utilization[countdata] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
-                            console.log(Utilization[countdata]);
+                            // console.log(Utilization[countdata]);
 
                             let element_City = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`, { timeout: 1000 })
                             City[countdata] = await page.evaluate(element_City => element_City.textContent, element_City)
                             City[countdata] = City[countdata].replace(/\s/g, '');
                             City[countdata] = City[countdata].replace('City:', '');
-                            console.log(City[countdata]);
+                            // console.log(City[countdata]);
 
-
+                            console.log(currentDate.toLocaleString());
                         } catch (error) {
                             continue;
                         }
@@ -201,8 +183,6 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
 
             }
         }
-
-
         var con = mysql.createConnection({
             host: "localhost",
             user: "supanut",
@@ -210,34 +190,33 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             database: "test01",
         });
 
-
         con.connect(function (err) {
             if (err) throw err;
             console.log("Connected!");
+            con.query("SELECT * FROM userlogin", function (err, result, fields) {
+                if (err) throw err;
+                console.log(result);
+                console.log("data get already now!");
+            });
             let countdata = 0;
-            console.log(text_cusSite);
-            console.log(SerialMachine);
-            console.log(OperatingTime);
-            console.log(Utilization);
-            console.log(City);
+            // var currentDate = new Date();
+            // var Last_Update = currentDate;
             while (countdata <= text_total) {
                 countdata++;
                 if (countdata <= 20) {
-                    var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[countdata]}', '${SerialMachine[countdata]}','${OperatingTime[countdata]}','${Utilization[countdata]}','${City[countdata]}')`;
+                    var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City,Last_Update) VALUES ('${text_cusSite[countdata]}', '${SerialMachine[countdata]}','${OperatingTime[countdata]}','${Utilization[countdata]}','${City[countdata]}','${currentDate.toLocaleString()}')`;
                 }
                 else if (countdata > 20) {
-                    var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City) VALUES ('${text_cusSite[countdata]}', '${SerialMachine[countdata]}','${OperatingTime[countdata]}','${Utilization[countdata]}','${City[countdata]}')`;
+                    var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City,Last_Update) VALUES ('${text_cusSite[countdata]}', '${SerialMachine[countdata]}','${OperatingTime[countdata]}','${Utilization[countdata]}','${City[countdata]}','${currentDate.toLocaleString()}')`;
                 }
                 con.query(sql, function (err, result) {
                     if (err) throw err;
                 });
             }
-
         });
 
     }
 })
-
     ();
 
 

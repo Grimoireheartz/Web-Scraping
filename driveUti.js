@@ -172,36 +172,36 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                         try {
                             let element_Driver = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div.column260.first-column > span > a`, { timeout: 1000 })
                             Driver[countdata] = await page.evaluate(element_Driver => element_Driver.textContent, element_Driver)
-                            console.log(Driver[countdata]);
+                            // console.log(Driver[countdata]);
 
 
                             let element_ExpectedHours = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(2) > span`, { timeout: 1000 })
                             ExpectedHours[countdata] = await page.evaluate(element_ExpectedHours => element_ExpectedHours.textContent, element_ExpectedHours)
-                            console.log(ExpectedHours[countdata]);
+                            // console.log(ExpectedHours[countdata]);
 
                             let element_OpTime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(3) > span > a`, { timeout: 1000 })
                             OpTime[countdata] = await page.evaluate(element_OpTime => element_OpTime.textContent, element_OpTime)
-                            console.log(OpTime[countdata]);
+                            // console.log(OpTime[countdata]);
 
                             let elemant_Utilization = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(4) > span`, { timeout: 1000 })
                             Utilization[countdata] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
-                            console.log(Utilization[countdata]);
+                            // console.log(Utilization[countdata]);
 
                             let elemant_HighShocks = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(5) > span > a`, { timeout: 1000 })
                             HighShocks[countdata] = await page.evaluate(elemant_HighShocks => elemant_HighShocks.textContent, elemant_HighShocks)
-                            console.log(HighShocks[countdata]);
+                            // console.log(HighShocks[countdata]);
 
                             let element_Site = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`, { timeout: 1000 })
                             Site[countdata] = await page.evaluate(element_Site => element_Site.textContent, element_Site)
                             Site[countdata] = Site[countdata].replace(/\s/g, '');
                             Site[countdata] = Site[countdata].replace('Site:', '');
-                            console.log(Site[countdata]);
+                            // console.log(Site[countdata]);
 
                             let element_City = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`, { timeout: 1000 })
                             City[countdata] = await page.evaluate(element_City => element_City.textContent, element_City)
                             City[countdata] = City[countdata].replace(/\s/g, '');
                             City[countdata] = City[countdata].replace('City:', '');
-                            console.log(City[countdata]);
+                            // console.log(City[countdata]);
 
                         } catch (error) {
                             continue;
@@ -229,20 +229,20 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             if (err) throw err;
             console.log("Connected!");
             let countdata = 0;
-            console.log(Driver);
-            console.log(ExpectedHours);
-            console.log(OpTime);
-            console.log(Utilization);
-            console.log(HighShocks);
-            console.log(Site);
-            console.log(City);
+            // console.log(Driver);
+            // console.log(ExpectedHours);
+            // console.log(OpTime);
+            // console.log(Utilization);
+            // console.log(HighShocks);
+            // console.log(Site);
+            // console.log(City);
             while (countdata <= text_total) {
                 countdata++;
                 if (countdata <= 20) {
-                    var sql = `INSERT INTO driveuti (Driver, ExpectedHours,OpTime,Utilization,HighShocks,Site,City) VALUES ('${Driver[countdata]}', '${ExpectedHours[countdata]}','${OpTime[countdata]}','${Utilization[countdata]}','${HighShocks[countdata]}','${Site[countdata]}','${City[countdata]}')`;
+                    var sql = `INSERT INTO driveut (Driver, ExpectedHours,OpTime,Utilization,HighShocks,Site,City) VALUES ('${Driver[countdata]}', '${ExpectedHours[countdata]}','${OpTime[countdata]}','${Utilization[countdata]}','${HighShocks[countdata]}','${Site[countdata]}','${City[countdata]}')`;
                 }
                 else if (countdata > 20) {
-                    var sql = `INSERT INTO driveuti (Driver, ExpectedHours,OpTime,Utilization,HighShocks,Site,City) VALUES ('${Driver[countdata]}', '${ExpectedHours[countdata]}','${OpTime[countdata]}','${Utilization[countdata]}','${HighShocks[countdata]}','${Site[countdata]}','${City[countdata]}')`;
+                    var sql = `INSERT INTO driveut (Driver, ExpectedHours,OpTime,Utilization,HighShocks,Site,City) VALUES ('${Driver[countdata]}', '${ExpectedHours[countdata]}','${OpTime[countdata]}','${Utilization[countdata]}','${HighShocks[countdata]}','${Site[countdata]}','${City[countdata]}')`;
                 }
                 con.query(sql, function (err, result) {
                     if (err) throw err;

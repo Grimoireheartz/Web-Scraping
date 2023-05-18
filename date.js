@@ -38,10 +38,13 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
     await page.goto("https://toyota-isite.eu/");
 
     await page.waitForSelector("#label_input_1");
-    await page.type("#label_input_1", "exsuyat1", { delay: 100 });
-    await page.type("#label_input_2", "Donut5821270015", { delay: 100 });
+    await page.type("#label_input_1", "extesir1", { delay: 100 });
+    await page.type("#label_input_2", "Te0846374624", { delay: 100 });
+    // await page.type("#label_input_1", "exsuyat1", { delay: 100 });
+    // await page.type("#label_input_2", "Donut5821270015", { delay: 100 });
     await page.click(".credentials_input_submit", { waitUntil: 'load', timeout: 100000 });
-    await page.authenticate({ username: 'external\exsuyat1', password: 'Donut5821270015' });
+    // await page.authenticate({ username: 'external\exsuyat1', password: 'Donut5821270015' });
+    await page.authenticate({ username: 'external\extesir1', password: 'Te0846374624' });
 
     let currentDate = new Date();
     console.log(currentDate.toLocaleDateString());
@@ -189,18 +192,18 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
             password: "donut31880",
             database: "test01",
         });
-
-        con.connect(function (err) {
+        await con.connect(function (err) {
             if (err) throw err;
             console.log("Connected!");
+            console.log("Insert to database =====>" + currentDate.toLocaleString());
+            // currentDate.setDate(currentDate.getDate() + 1);
+            // console.log("After Insert to database =====>" + currentDate.toLocaleString());
             con.query("SELECT * FROM userlogin", function (err, result, fields) {
                 if (err) throw err;
-                console.log(result);
+                // console.log(result);
                 console.log("data get already now!");
             });
             let countdata = 0;
-            // var currentDate = new Date();
-            // var Last_Update = currentDate;
             while (countdata <= text_total) {
                 countdata++;
                 if (countdata <= 20) {
@@ -211,7 +214,7 @@ const scapeinfiniscroll = async (page, itemTargetCount) => {
                 }
                 con.query(sql, function (err, result) {
                     if (err) throw err;
-                });
+                }); continue;
             }
         });
 

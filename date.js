@@ -262,11 +262,15 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
     // let newdate = new Date();
     console.log(currentDate.toLocaleDateString());
     console.log(currentDate.toString());
+    console.log(inputDate.toLocaleDateString());
+    // inputDate.setDate(inputDate.getDate() - 1);
+    // console.log(inputDate.toLocaleDateString());
+
 
     let days = 3;
 
 
-    for (let x = 1; x < days; x++) {
+    for (let x = 2; x < days; x++) {
 
         if (x <= 1) {
 
@@ -293,9 +297,12 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
         }
 
         else if (x > 1) {
-            inputDate = currentDate.getDate() - 1;
+            // inputDate = currentDate.getDate() - 1;
 
-            currentDate.setDate(inputDate);
+            inputDate.setDate(inputDate.getDate() - 1);
+
+
+            // currentDate.setDate(inputDate);
             // console.log(inputDate.toLocaleDateString());
             await page.waitForSelector('body > header > div > div.menu-bar')
             await page.goto('https://toyota-isite.eu/Utilization/Index?menu=Utilization');

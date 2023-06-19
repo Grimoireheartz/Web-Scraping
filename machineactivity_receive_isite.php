@@ -30,6 +30,10 @@ $drivetime = $data["drivetime"];
 $lifttime = $data["lifttime"];
 $optime = $data["optime"];
 $opratio = $data["opratio"];
+$driver = $data["driver"];
+$logoffMethod = $data["logoffMethod"];
+$Machinefamily = $data["Machinefamily"];
+$Model = $data["Model"];
 $insertdata = $data["insertdata"];
 $itemslength = $data["itemslength"];
 
@@ -41,6 +45,10 @@ $drivetime_arr = explode(',', $drivetime);
 $lifttime_arr = explode(',', $lifttime);
 $optime_arr = explode(',', $optime);
 $opratio_arr = explode(',', $opratio);
+$driver_arr = explode(',', $driver);
+$logoffMethod_arr = explode(',', $logoffMethod);
+$Machinefamily_arr = explode(',', $Machinefamily);
+$Model_arr = explode(',', $Model);
 $insertdata_arr = explode(',', $insertdata);
 $itemslength_arr = explode(',', $itemslength);
 
@@ -50,7 +58,7 @@ $Filterdata = 0;
 $FilterSerialMachince = '';
 
 while ($Filterdata < (count($serialmachine_arr) - 1)) {
-    $FilterSerialMachince .="(serialmachine = '".$serialmachine_arr[$Filterdata]."' and fromtime = '".$fromtime_arr[$Filterdata]."' ) or ";
+    $FilterSerialMachince .="(serialmachine = '".$serialmachine_arr[$Filterdata]."' and fromtime = '".$fromtime_arr[$Filterdata]."' and opratio = '".$opratio_arr[$Filterdata]."' ) or ";
     $Filterdata++;
 }
 $FilterSerialMachince = substr($FilterSerialMachince, 0, -4);
@@ -63,8 +71,8 @@ if (strlen($FilterSerialMachince) > 0) {
 
 for ($x = 0; $x < (count($serialmachine_arr) - 1); $x++) {
 
-    $sql_insert_quotreq = "INSERT INTO bsc_isite_machineactivity (serialmachine,fromtime,totime,keytime,drivetime,lifttime,optime,opratio,insert_date) 
-                            VALUES ('$serialmachine_arr[$x]','$fromtime_arr[$x]','$totime_arr[$x]','$keytime_arr[$x]','$drivetime_arr[$x]','$lifttime_arr[$x]','$optime_arr[$x]','$opratio_arr[$x]','$insertdata_arr[$x]')";
+    $sql_insert_quotreq = "INSERT INTO bsc_isite_machineactivity (serialmachine,fromtime,totime,keytime,drivetime,lifttime,optime,opratio,driver,logoffMethod,machinefamily,model,insert_date) 
+                            VALUES ('$serialmachine_arr[$x]','$fromtime_arr[$x]','$totime_arr[$x]','$keytime_arr[$x]','$drivetime_arr[$x]','$lifttime_arr[$x]','$optime_arr[$x]','$opratio_arr[$x]','$driver_arr[$x]','$logoffMethod_arr[$x]','$Machinefamily_arr[$x]','$Model_arr[$x]','$insertdata_arr[$x]')";
     $result = mysqli_query($link, $sql_insert_quotreq);
 }
 

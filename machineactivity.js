@@ -32,6 +32,10 @@ async function autoScroll(page, referencedate) {
         var lifttime = [];
         var optime = [];
         var opratio = [];
+        var driver = [];
+        var logoffMethod = [];
+        var Machinefamily = [];
+        var Model = [];
 
         while (countdata < items.length) {
             countitemflesh++;
@@ -78,6 +82,32 @@ async function autoScroll(page, referencedate) {
                         opratio[i] = await page.evaluate(element_opratio => element_opratio.textContent, element_opratio)
                         console.log(opratio[i]);
 
+                        let element_driver = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`, { timeout: 1000 })
+                        driver[i] = await page.evaluate(element_driver => element_driver.textContent, element_driver)
+                        driver[i] = driver[i].replace(/\s/g, '');
+                        driver[i] = driver[i].replace('Driver:', '');
+                      
+
+                        let element_logoffMethod = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(4)`, { timeout: 1000 })
+                        logoffMethod[i] = await page.evaluate(element_logoffMethod => element_logoffMethod.textContent, element_logoffMethod)
+                        logoffMethod[i] = logoffMethod[i].replace(/\s/g, '');
+                        logoffMethod[i] = logoffMethod[i].replace('LogoffMethod:', '');
+                        
+
+                        let element_Machinefamily = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(8)`, { timeout: 1000 })
+                        Machinefamily[i] = await page.evaluate(element_Machinefamily => element_Machinefamily.textContent, element_Machinefamily)
+                        Machinefamily[i] = Machinefamily[i].replace(/\s/g, '');
+                        Machinefamily[i] = Machinefamily[i].replace('MachineFamily:', '');
+                       
+
+                        let element_Model = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(9)`, { timeout: 1000 })
+                        Model[i] = await page.evaluate(element_Model => element_Model.textContent, element_Model)
+                        Model[i] = Model[i].replace(/\s/g, '');
+                        Model[i] = Model[i].replace('Model:', '');
+                       
+
+
+
                         // console.log(currentDate.toLocaleDateString());
                     }
                     else if (countdata > 20) {
@@ -119,6 +149,32 @@ async function autoScroll(page, referencedate) {
                             let element_opratio = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.result-row-title > div:nth-child(9) > span`, { timeout: 1000 })
                             opratio[countdata] = await page.evaluate(element_opratio => element_opratio.textContent, element_opratio)
                             console.log(opratio[countdata]);
+
+                            let element_driver = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`, { timeout: 1000 })
+                            driver[countdata] = await page.evaluate(element_driver => element_driver.textContent, element_driver)
+                            driver[countdata] = driver[countdata].replace(/\s/g, '');
+                            driver[countdata] = driver[countdata].replace('Driver:', '');
+                           
+
+                            let element_logoffMethod = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(4)`, { timeout: 1000 })
+                            logoffMethod[countdata] = await page.evaluate(element_logoffMethod => element_logoffMethod.textContent, element_logoffMethod)
+                            logoffMethod[countdata] = logoffMethod[countdata].replace(/\s/g, '');
+                            logoffMethod[countdata] = logoffMethod[countdata].replace('LogoffMethod:', '');
+                           
+
+                            let element_Machinefamily = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(8)`, { timeout: 1000 })
+                            Machinefamily[countdata] = await page.evaluate(element_Machinefamily => element_Machinefamily.textContent, element_Machinefamily)
+                            Machinefamily[countdata] = Machinefamily[countdata].replace(/\s/g, '');
+                            Machinefamily[countdata] = Machinefamily[countdata].replace('MachineFamily:', '');
+                           
+
+                            let element_Model = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(9)`, { timeout: 1000 })
+                            Model[countdata] = await page.evaluate(element_Model => element_Model.textContent, element_Model)
+                            Model[countdata] = Model[countdata].replace(/\s/g, '');
+                            Model[countdata] = Model[countdata].replace('Model:', '');
+                           
+
+
                         } catch (error) {
                             continue;
                         }
@@ -140,6 +196,10 @@ async function autoScroll(page, referencedate) {
         let lifttimeData = '';
         let optimeData = '';
         let opratioData = '';
+        let driverData = '';
+        let logoffMethodData = '';
+        let MachinefamilyData = '';
+        let ModelData = '';
         let insertdateData = '';
         let itemslengthData = '';
 
@@ -153,6 +213,10 @@ async function autoScroll(page, referencedate) {
             lifttimeData += lifttime[newdata] + ',';
             optimeData += optime[newdata] + ',';
             opratioData += opratio[newdata] + ',';
+            driverData += driver[newdata] + ',';
+            logoffMethodData += logoffMethod[newdata] + ',';
+            MachinefamilyData += Machinefamily[newdata] + ',';
+            ModelData += Model[newdata] + ',';
             insertdateData += referencedate + ',';
             itemslengthData += items.length + ',';
 
@@ -160,7 +224,7 @@ async function autoScroll(page, referencedate) {
 
         var request = require('request');
 
-        request.post (
+        request.post(
             'https://www.btmexpertsales.com/btconnect_dbapi/isite_datacenter_project/machineactivity_receive_isite.php',
             {
                 json: {
@@ -171,10 +235,14 @@ async function autoScroll(page, referencedate) {
                     drivetime: drivetimeData,
                     lifttime: lifttimeData,
                     optime: optimeData,
-                    opratio : opratioData,
+                    opratio: opratioData,
+                    driver: driverData,
+                    logoffMethod: logoffMethodData,
+                    Machinefamily: MachinefamilyData,
+                    Model: ModelData,
                     insertdata: insertdateData,
                     itemslength: itemslengthData,
-                   
+
                 }
             },
             function (error, response, body) {

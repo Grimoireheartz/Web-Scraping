@@ -310,12 +310,11 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
 
     let currentDate = new Date();
     let inputDate = currentDate;
-    // let newdate = new Date();
+ 
     console.log(currentDate.toLocaleDateString());
     console.log(currentDate.toString());
     console.log(inputDate.toLocaleDateString());
-    // inputDate.setDate(inputDate.getDate() - 1);
-    // console.log(inputDate.toLocaleDateString());
+    
 
 
     let days = 3;
@@ -348,13 +347,12 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
         }
 
         else if (x > 1) {
-            // inputDate = currentDate.getDate() - 1;
+           
 
             inputDate.setDate(inputDate.getDate() - 1);
 
 
-            // currentDate.setDate(inputDate);
-            // console.log(inputDate.toLocaleDateString());
+           
             await page.waitForSelector('body > header > div > div.menu-bar')
             await page.goto('https://toyota-isite.eu/Utilization/Index?menu=Utilization');
             await page.focus('#fromDate');
@@ -384,122 +382,7 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
         console.log('Total=>' + text_total)
 
 
-        // let countitemflesh = 0;
-        // let countdata = 0;
-
-        // var text_cusSite = [];
-        // var SerialMachine = [];
-        // var OperatingTime = [];
-        // var Utilization = [];
-        // var City = [];
-
         await scapeinfiniscroll(page, text_total, inputDate.toLocaleDateString())
-
-
-        // while (countdata <= text_total) {
-        //     countitemflesh++;
-        //     for (let i = 1; i <= 20; i++) {
-        //         countdata++;
-        //         console.log("count=>" + countitemflesh);
-        //         console.log(countdata)
-        //         if (countdata <= text_total) {
-
-        //             if (countdata <= 20) {
-        //                 let element_cusSite = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`, { timeout: 500 })
-        //                 text_cusSite[i] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
-        //                 text_cusSite[i] = text_cusSite[i].replace(/\s/g, '');
-        //                 text_cusSite[i] = text_cusSite[i].replace('Site:', '');
-        //                 console.log(text_cusSite[i]);
-
-        //                 let element_SerialMachine = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span > a`, { timeout: 500 })
-        //                 SerialMachine[i] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
-        //                 console.log(SerialMachine[i]);
-        //                 let element_OperatingTime = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span`, { timeout: 500 })
-        //                 OperatingTime[i] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
-        //                 console.log(OperatingTime[i]);
-        //                 let elemant_Utilization = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`, { timeout: 500 })
-        //                 Utilization[i] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
-        //                 console.log(Utilization[i]);
-        //                 let element_City = await page.waitForSelector(`#resultItems > div > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`, { timeout: 500 })
-        //                 City[i] = await page.evaluate(element_City => element_City.textContent, element_City)
-        //                 City[i] = City[i].replace(/\s/g, '');
-        //                 City[i] = City[i].replace('City:', '');
-        //                 console.log(City[i]);
-        //                 console.log(currentDate.toLocaleString());
-        //             }
-
-        //             else if (countdata > 20) {
-        //                 try {
-        //                     let element_cusSite = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(1)`, { timeout: 500 })
-        //                     text_cusSite[countdata] = await page.evaluate(element_cusSite => element_cusSite.textContent, element_cusSite)
-        //                     text_cusSite[countdata] = text_cusSite[countdata].replace(/\s/g, '');
-        //                     text_cusSite[countdata] = text_cusSite[countdata].replace('Site:', '');
-        //                     console.log(text_cusSite[countdata]);
-
-        //                     let element_SerialMachine = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column160 > span`, { timeout: 500 })
-        //                     SerialMachine[countdata] = await page.evaluate(element_SerialMachine => element_SerialMachine.textContent, element_SerialMachine)
-        //                     console.log(SerialMachine[countdata]);
-
-        //                     let element_OperatingTime = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div.column100 > span > a`, { timeout: 500 })
-        //                     OperatingTime[countdata] = await page.evaluate(element_OperatingTime => element_OperatingTime.textContent, element_OperatingTime)
-        //                     console.log(OperatingTime[countdata]);
-
-        //                     let elemant_Utilization = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultTitleRow.resultIconSpace.result-row-title > div:nth-child(5) > span`, { timeout: 500 })
-        //                     Utilization[countdata] = await page.evaluate(elemant_Utilization => elemant_Utilization.textContent, elemant_Utilization)
-        //                     console.log(Utilization[countdata]);
-
-        //                     let element_City = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(3)`, { timeout: 500 })
-        //                     City[countdata] = await page.evaluate(element_City => element_City.textContent, element_City)
-        //                     City[countdata] = City[countdata].replace(/\s/g, '');
-        //                     City[countdata] = City[countdata].replace('City:', '');
-        //                     console.log(City[countdata]);
-
-        //                     console.log(currentDate.toLocaleString());
-        //                 } catch (error) {
-        //                     continue;
-        //                 }
-
-        //             }
-        //         }
-        //         else {
-        //             console.log("Get data over")
-        //         }
-
-        //     }
-        // }
-        // var con = mysql.createConnection({
-        //     host: "localhost",
-        //     user: "supanut",
-        //     password: "donut31880",
-        //     database: "test01",
-        // });
-        // await con.connect(function (err) {
-        //     if (err) throw err;
-        //     console.log("Connected!");
-        //     console.log("CurrentDate Insert to database =====>" + newdate.toLocaleString());
-
-        //     con.query("SELECT * FROM userlogin", function (err, result, fields) {
-        //         if (err) throw err;
-        //         // console.log(result);
-        //         console.log("data get already now!");
-        //     });
-
-        //     let countdata = 0;
-        //     while (countdata <= text_total) {
-        //         countdata++;
-        //         if (countdata <= 20) {
-        //             var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City,Last_Update,sequence) VALUES ('${text_cusSite[countdata]}', '${SerialMachine[countdata]}','${OperatingTime[countdata]}','${Utilization[countdata]}','${City[countdata]}','${newdate.toLocaleString()}','${countdata}')`;
-        //         }
-        //         else if (countdata > 20) {
-        //             var sql = `INSERT INTO userlogin (text_cusSite, SerialMachine,OperatingTime,Utilization,City,Last_Update,sequence) VALUES ('${text_cusSite[countdata]}', '${SerialMachine[countdata]}','${OperatingTime[countdata]}','${Utilization[countdata]}','${City[countdata]}','${newdate.toLocaleString()}','${countdata}')`;
-        //         }
-        //         con.query(sql, function (err, result) {
-        //             if (err) throw err;
-        //         }); continue;
-
-        //     }
-        //     newdate.setDate(newdate.getDate() - 1);
-        // });
 
     }
 })

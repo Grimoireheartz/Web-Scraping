@@ -279,7 +279,7 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
     console.log(inputDate.toLocaleDateString());
     // inputDate.setDate(inputDate.getDate() - 1);
     // console.log(inputDate.toLocaleDateString());
-    let days = 3;
+    let days = 2;
 
     console.log("Srech data ");
     for (let x = 1; x < days; x++) {
@@ -310,7 +310,7 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
             await page.waitForSelector('#searchResultContainer > div.search-top-container > div > div.searchResultSummary > div.total-summary');
         }
 
-        if (x > 1) {
+        else if (x > 1) {
 
             inputDate.setDate(inputDate.getDate() - 1);
 

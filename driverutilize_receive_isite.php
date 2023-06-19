@@ -44,17 +44,17 @@ $referencedate = $insertdata_arr[0];
 $Filterdata = 0;
 $FilterDriver = '';
 
-// while ($Filterdata < (count($driver_arr) - 1)){
-//     $FilterDriver .= "(driver = '".$driver_arr[$Filterdata]."' and site = '".$site_arr[$Filterdata]."')  or ";
-//     $Filterdata++;
-// }
-// $FilterDriver = substr($FilterDriver, 0, -4);
+while ($Filterdata < (count($driver_arr) - 1)){
+    $FilterDriver .= "(driver = '".$driver_arr[$Filterdata]."' and site = '".$site_arr[$Filterdata]."' and opTime = '".$optime_arr[$Filterdata]."' utilization = '".$utilize_arr[$Filterdata]."' )  or ";
+    $Filterdata++;
+}
+$FilterDriver = substr($FilterDriver, 0, -4);
 
-// if (strlen($FilterDriver) > 0) {
-//     $sql_insert_quotreq = "DELETE FROM bsc_isite_driverutilize 
-//                             WHERE($FilterDriver) and insert_date like '%$referencedate%' ";
-//     $result = mysqli_query($link, $sql_insert_quotreq);
-// }
+if (strlen($FilterDriver) > 0) {
+    $sql_insert_quotreq = "DELETE FROM bsc_isite_driverutilize 
+                            WHERE($FilterDriver) and insert_date like '%$referencedate%' ";
+    $result = mysqli_query($link, $sql_insert_quotreq);
+}
 
 
 for ($x = 0; $x < (count($driver_arr) - 1); $x++) {

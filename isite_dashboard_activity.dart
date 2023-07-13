@@ -22,12 +22,12 @@ class _IsiteactivityState extends State<Isiteactivity> {
   List<List<List<String>>> customersitefilter = [];
   bool load = false;
   List<List<List<String>>> selectCusList = [];
-  List<MachineActivity> machinedata = [];
+  List<String> machinedata = [];
 
   @override
   void initState() {
     super.initState();
-    ActivityMachine(); // เรียกใช้งานฟังก์ชัน ActivityMachine()
+    ActivityMachine();
     UtilizeMachine();
   }
 
@@ -47,72 +47,80 @@ class _IsiteactivityState extends State<Isiteactivity> {
             )
           : SingleChildScrollView(
               child: Container(
-                child: Column(
-                  children: [
-                    Container(
-                      width: screensize * 0.9,
-                      child: DropdownSearch<List<List<String>>>.multiSelection(
-                        dropdownBuilder: (context, selectedItems) {
-                          return Container(
-                            child: selectedItems.length > 1
-                                ? Text(
-                                    'Select ${selectedItems.length.toString()} items')
-                                : Text(
-                                    'Select ${selectedItems.length.toString()} item'),
-                          );
-                        },
-                        items: customersitefilter,
-                        compareFn: (item1, item2) => item1[0] == item2[0],
-                        clearButtonProps: ClearButtonProps(
-                          isVisible: true,
-                        ),
-                        popupProps: PopupPropsMultiSelection.menu(
-                          showSelectedItems: true,
-                          showSearchBox: true,
-
-                          // disabledItemFn: (String s) => s.startsWith('I'),
-                          itemBuilder: (context, item, isSelected) {
+                child: SingleChildScrollView(
+                  scrollDirection: Axis.horizontal,
+                  child: Column(
+                    children: [
+                      Container(
+                        width: screensize * 0.9,
+                        child:
+                            DropdownSearch<List<List<String>>>.multiSelection(
+                          dropdownBuilder: (context, selectedItems) {
                             return Container(
-                              // height: 40,
-                              margin: EdgeInsets.symmetric(horizontal: 8),
-                              decoration: null,
-                              child: ListTile(
-                                selected: isSelected,
-                                title: Text(
-                                  item[0][0],
-                                  style: TextStyle(fontSize: 14),
-                                ),
-                              ),
+                              child: selectedItems.length > 1
+                                  ? Text(
+                                      'Select ${selectedItems.length.toString()} items')
+                                  : Text(
+                                      'Select ${selectedItems.length.toString()} item'),
                             );
                           },
-                        ),
-                        onChanged: (value) {
-                          // print(value);
-                          // String cusselect = '';
+                          items: customersitefilter,
+                          compareFn: (item1, item2) => item1[0] == item2[0],
+                          clearButtonProps: ClearButtonProps(
+                            isVisible: true,
+                          ),
+                          popupProps: PopupPropsMultiSelection.menu(
+                            showSelectedItems: true,
+                            showSearchBox: true,
+                            itemBuilder: (context, item, isSelected) {
+                              return Container(
+                                margin: EdgeInsets.symmetric(horizontal: 8),
+                                decoration: null,
+                                child: ListTile(
+                                  selected: isSelected,
+                                  title: Text(
+                                    item[0][0],
+                                    style: TextStyle(fontSize: 14),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          onChanged: (value) {
+                            setState(() {
+                              machinedata.clear();
+                            });
+                            // print(value);
+                            // String cusselect = '';
 
-                          for (var data in value) {
-                            // String cusname = data.split(',')[1];
-                            for (var serialmachine in data[1]) {
-                              print(serialmachine);
+                            for (var data in value) {
+                              // String cusname = data.split(',')[1];
+                              for (var serialmachine in data[1]) {
+                                print(serialmachine);
+
+                                setState(() {
+                                  machinedata.add(serialmachine);
+                                });
+                              }
                             }
-                            // print(data);
-                          }
-                          // if (cusselect.length > 1) {
-                          //   cusselect = cusselect.substring(0, (cusselect.length - 1));
-                          //   print(cusselect);
-                          //   setState(() {
-                          //     customerFilterSearchPM = cusselect;
-                          //   });
-                          //   getCusPMPlan();
-                          // }
-                        },
-                        selectedItems: selectCusList,
-                        dropdownButtonProps:
-                            DropdownButtonProps(isVisible: false),
+
+                            // setState(() {
+                            //   selectCusList = value;
+
+                            //   machineactprocessdata = machineactivity
+                            //       .where((data) => value.any((item) =>
+                            //           item[1].contains(data.serialmachine)))
+                            //       .toList();
+                            // });
+                          },
+                          // selectedItems: selectCusList,
+                          dropdownButtonProps:
+                              DropdownButtonProps(isVisible: false),
+                        ),
                       ),
-                    ),
-                    ...showdatamachine()
-                  ],
+                      ...showdatamachine()
+                    ],
+                  ),
                 ),
               ),
             ),
@@ -122,11 +130,52 @@ class _IsiteactivityState extends State<Isiteactivity> {
   List<Widget> showdatamachine() {
     List<Widget> iteamshow = [];
 
+    // for (var dataitems in machineactprocessdata) {
+    //   iteamshow.add(Container(
+    //     child: Text(dataitems.serialmachine),
+    //   ));
+    // }
     for (var dataitems in machineactprocessdata) {
-      iteamshow.add(Container(
-        child: Text(dataitems.serialmachine),
-      ));
+      if (machinedata.length > 1) {
+        if (machinedata.contains(dataitems.serialmachine)) {
+          print('${dataitems.serialmachine}');
+
+          iteamshow.add(Container(
+            child: Row(
+              children: [
+                Text(dataitems.serialmachine),
+                Text(' : ' + dataitems.keytime),
+                Text(' : ' + dataitems.drivetime),
+                Text(' : ' + dataitems.lifttime),
+                Text(' : ' + dataitems.optime),
+                Text(' : ' + dataitems.machinefamily),
+                Text(' : ' + dataitems.model),
+              ],
+            ),
+          ));
+        }
+      } else {
+        // print('${dataitems.serialmachine}');
+        // print('${dataitems.keytime}');
+        // print('${dataitems.drivetime}');
+        // print('${dataitems.lifttime}');
+        // print('${dataitems.optime}');
+        iteamshow.add(Container(
+          child: Row(
+            children: [
+              Text(dataitems.serialmachine),
+              Text(' : ' + dataitems.keytime),
+              Text(' : ' + dataitems.drivetime),
+              Text(' : ' + dataitems.lifttime),
+              Text(' : ' + dataitems.optime),
+              Text(' : ' + dataitems.machinefamily),
+              Text(' : ' + dataitems.model),
+            ],
+          ),
+        ));
+      }
     }
+
     return iteamshow;
   }
 
@@ -200,8 +249,14 @@ class _IsiteactivityState extends State<Isiteactivity> {
     print(apiPath);
 
     String serialbefore = '';
+    String machinefamilydata = '';
+    String modeldata = '';
     String insertdate = '';
     double sumkeytime = 0;
+    double sumdrivetime = 0;
+    double sumlifttime = 0;
+    double sumoptime = 0;
+
     bool firstdata = true;
     await Dio().get(apiPath).then((value) {
       for (var activity in jsonDecode(value.data)) {
@@ -215,6 +270,21 @@ class _IsiteactivityState extends State<Isiteactivity> {
                 double.parse(activityObj.keytime.split(':')[0]) * 3600;
             sumkeytime += double.parse(activityObj.keytime.split(':')[1]) * 60;
             sumkeytime += double.parse(activityObj.keytime.split(':')[2]);
+            sumdrivetime +=
+                double.parse(activityObj.drivetime.split(':')[0]) * 3600;
+            sumdrivetime +=
+                double.parse(activityObj.drivetime.split(':')[1]) * 60;
+            sumdrivetime += double.parse(activityObj.drivetime.split(':')[2]);
+
+            sumlifttime +=
+                double.parse(activityObj.lifttime.split(':')[0]) * 3600;
+            sumlifttime +=
+                double.parse(activityObj.lifttime.split(':')[1]) * 60;
+            sumlifttime += double.parse(activityObj.lifttime.split(':')[2]);
+
+            sumoptime += double.parse(activityObj.optime.split(':')[0]) * 3600;
+            sumoptime += double.parse(activityObj.optime.split(':')[1]) * 60;
+            sumoptime += double.parse(activityObj.optime.split(':')[2]);
           } else {
             if (firstdata == false) {
               machineactprocessdata.add(
@@ -223,14 +293,14 @@ class _IsiteactivityState extends State<Isiteactivity> {
                   fromtime: '',
                   totime: '',
                   keytime: sumkeytime.toString(),
-                  drivetime: '',
-                  lifttime: '',
-                  optime: '',
+                  drivetime: sumdrivetime.toString(),
+                  lifttime: sumlifttime.toString(),
+                  optime: sumoptime.toString(),
                   opratio: '',
                   driver: '',
                   logoffMethod: '',
-                  machinefamily: '',
-                  model: '',
+                  machinefamily: activityObj.machinefamily,
+                  model: activityObj.model,
                   insert_date: insertdate,
                 ),
               );
@@ -240,9 +310,31 @@ class _IsiteactivityState extends State<Isiteactivity> {
                 double.parse(activityObj.keytime.split(':')[0]) * 3600;
             sumkeytime += double.parse(activityObj.keytime.split(':')[1]) * 60;
             sumkeytime += double.parse(activityObj.keytime.split(':')[2]);
+
+            sumdrivetime = 0;
+            sumdrivetime +=
+                double.parse(activityObj.drivetime.split(':')[0]) * 3600;
+            sumdrivetime +=
+                double.parse(activityObj.drivetime.split(':')[1]) * 60;
+            sumdrivetime += double.parse(activityObj.drivetime.split(':')[2]);
+
+            sumlifttime = 0;
+            sumlifttime +=
+                double.parse(activityObj.lifttime.split(':')[0]) * 3600;
+            sumlifttime +=
+                double.parse(activityObj.lifttime.split(':')[1]) * 60;
+            sumlifttime += double.parse(activityObj.lifttime.split(':')[2]);
+
+            sumoptime = 0;
+            sumoptime += double.parse(activityObj.optime.split(':')[0]) * 3600;
+            sumoptime += double.parse(activityObj.optime.split(':')[1]) * 60;
+            sumoptime += double.parse(activityObj.optime.split(':')[2]);
+
             firstdata = false;
           }
           serialbefore = activityObj.serialmachine;
+          machinefamilydata = activityObj.machinefamily;
+          modeldata = activityObj.model;
           insertdate = activityObj.insert_date;
           setState(() {
             machineactivity.add(activityObj);
@@ -255,14 +347,14 @@ class _IsiteactivityState extends State<Isiteactivity> {
           fromtime: '',
           totime: '',
           keytime: sumkeytime.toString(),
-          drivetime: '',
-          lifttime: '',
-          optime: '',
+          drivetime: sumdrivetime.toString(),
+          lifttime: sumlifttime.toString(),
+          optime: sumoptime.toString(),
           opratio: '',
           driver: '',
           logoffMethod: '',
-          machinefamily: '',
-          model: '',
+          machinefamily: machinefamilydata,
+          model: modeldata,
           insert_date: insertdate,
         ),
       );

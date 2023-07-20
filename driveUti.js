@@ -279,7 +279,7 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
     console.log(inputDate.toLocaleDateString());
     // inputDate.setDate(inputDate.getDate() - 1);
     // console.log(inputDate.toLocaleDateString());
-    let days = 2;
+    let days = 8;
 
     console.log("Srech data ");
     for (let x = 1; x < days; x++) {

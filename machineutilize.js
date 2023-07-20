@@ -317,10 +317,10 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
     
 
 
-    let days = 3;
+    let days = 8;
 
 
-    for (let x = 2; x < days; x++) {
+    for (let x = 1; x < days; x++) {
 
         if (x <= 1) {
 

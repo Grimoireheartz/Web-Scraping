@@ -29,10 +29,11 @@ if ($monthbefore == 0) {
     $monthbefore = 1;
 }
 
-$sql = "SELECT serialmachine,text_cussite,operatingtime,utilization,city,last_update,owner,machinefamily,model,insert_date
+$sql = "SELECT  serialmachine,text_cussite,operatingtime,utilization,city,last_update,owner,machinefamily,model,insert_date
                 FROM bsc_isite_machineutilize 
                 WHERE (insert_date LIKE '$monthbefore%' and insert_date LIKE '%$yearnow') or (insert_date LIKE '$monthnow%' and insert_date LIKE '%$yearnow')
                ORDER BY text_cussite ASC,serialmachine ASC
+              
             ";
 
 

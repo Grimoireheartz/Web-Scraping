@@ -13,16 +13,34 @@ async function autoScroll(page, referencedate) {
 
 
     while (1) {
+        // previousHeight = await page.evaluate("document.body.scrollHeight");
+        // await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
+        // await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
+        // await new Promise((resolve) => setTimeout(resolve, 2000));
+
+        // await page.waitForSelector(`#searchwaitingicon`, { timeout: 2000 });
+
+        // items = await page.evaluate(() => {
+        //     const items = Array.from(document.querySelectorAll("#resultItems > div > div"));
+        //     return items.map((item) => item.innerText);
+        // });
+
         previousHeight = await page.evaluate("document.body.scrollHeight");
         await page.evaluate("window.scrollTo(0, document.body.scrollHeight)");
         await page.waitForFunction(`document.body.scrollHeight > ${previousHeight}`);
         await new Promise((resolve) => setTimeout(resolve, 2000));
-      
 
-        items = await page.evaluate(() => {
+        const searchwaitingicon = await page.waitForSelector(`#searchwaitingicon`, { timeout: 2000 });
+        if (!searchwaitingicon) {
+            console.log("Search complete. Exit the loop");
+            break;
+        }
+          items = await page.evaluate(() => {
             const items = Array.from(document.querySelectorAll("#resultItems > div > div"));
             return items.map((item) => item.innerText);
         });
+
+
 
         console.log(items.length);
 
@@ -88,25 +106,25 @@ async function autoScroll(page, referencedate) {
                         driver[i] = await page.evaluate(element_driver => element_driver.textContent, element_driver)
                         driver[i] = driver[i].replace(/\s/g, '');
                         driver[i] = driver[i].replace('Driver:', '');
-                      
+
 
                         let element_logoffMethod = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(4)`, { timeout: 1000 })
                         logoffMethod[i] = await page.evaluate(element_logoffMethod => element_logoffMethod.textContent, element_logoffMethod)
                         logoffMethod[i] = logoffMethod[i].replace(/\s/g, '');
                         logoffMethod[i] = logoffMethod[i].replace('LogoffMethod:', '');
-                        
+
 
                         let element_Machinefamily = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(8)`, { timeout: 1000 })
                         Machinefamily[i] = await page.evaluate(element_Machinefamily => element_Machinefamily.textContent, element_Machinefamily)
                         Machinefamily[i] = Machinefamily[i].replace(/\s/g, '');
                         Machinefamily[i] = Machinefamily[i].replace('MachineFamily:', '');
-                       
+
 
                         let element_Model = await page.waitForSelector(`#resultItems > div:nth-child(1) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(9)`, { timeout: 1000 })
                         Model[i] = await page.evaluate(element_Model => element_Model.textContent, element_Model)
                         Model[i] = Model[i].replace(/\s/g, '');
                         Model[i] = Model[i].replace('Model:', '');
-                       
+
 
 
 
@@ -156,25 +174,25 @@ async function autoScroll(page, referencedate) {
                             driver[countdata] = await page.evaluate(element_driver => element_driver.textContent, element_driver)
                             driver[countdata] = driver[countdata].replace(/\s/g, '');
                             driver[countdata] = driver[countdata].replace('Driver:', '');
-                           
+
 
                             let element_logoffMethod = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(4)`, { timeout: 1000 })
                             logoffMethod[countdata] = await page.evaluate(element_logoffMethod => element_logoffMethod.textContent, element_logoffMethod)
                             logoffMethod[countdata] = logoffMethod[countdata].replace(/\s/g, '');
                             logoffMethod[countdata] = logoffMethod[countdata].replace('LogoffMethod:', '');
-                           
+
 
                             let element_Machinefamily = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(8)`, { timeout: 1000 })
                             Machinefamily[countdata] = await page.evaluate(element_Machinefamily => element_Machinefamily.textContent, element_Machinefamily)
                             Machinefamily[countdata] = Machinefamily[countdata].replace(/\s/g, '');
                             Machinefamily[countdata] = Machinefamily[countdata].replace('MachineFamily:', '');
-                           
+
 
                             let element_Model = await page.waitForSelector(`#resultItems > div:nth-child(${countitemflesh}) > div:nth-child(${i}) > div.resultSubRow > div:nth-child(9)`, { timeout: 1000 })
                             Model[countdata] = await page.evaluate(element_Model => element_Model.textContent, element_Model)
                             Model[countdata] = Model[countdata].replace(/\s/g, '');
                             Model[countdata] = Model[countdata].replace('Model:', '');
-                           
+
 
 
                         } catch (error) {
@@ -190,69 +208,69 @@ async function autoScroll(page, referencedate) {
         }
 
 
-        let serialmachineData = '';
-        let fromtimeData = '';
-        let totimeData = '';
-        let keytimeData = '';
-        let drivetimeData = '';
-        let lifttimeData = '';
-        let optimeData = '';
-        let opratioData = '';
-        let driverData = '';
-        let logoffMethodData = '';
-        let MachinefamilyData = '';
-        let ModelData = '';
-        let insertdateData = '';
-        let itemslengthData = '';
+        // let serialmachineData = '';
+        // let fromtimeData = '';
+        // let totimeData = '';
+        // let keytimeData = '';
+        // let drivetimeData = '';
+        // let lifttimeData = '';
+        // let optimeData = '';
+        // let opratioData = '';
+        // let driverData = '';
+        // let logoffMethodData = '';
+        // let MachinefamilyData = '';
+        // let ModelData = '';
+        // let insertdateData = '';
+        // let itemslengthData = '';
 
-        while (newdata < items.length) {
-            newdata++;
-            serialmachineData += serialmachine[newdata] + ',';
-            fromtimeData += fromtime[newdata] + ',';
-            totimeData += totime[newdata] + ',';
-            keytimeData += keytime[newdata] + ',';
-            drivetimeData += drivetime[newdata] + ',';
-            lifttimeData += lifttime[newdata] + ',';
-            optimeData += optime[newdata] + ',';
-            opratioData += opratio[newdata] + ',';
-            driverData += driver[newdata] + ',';
-            logoffMethodData += logoffMethod[newdata] + ',';
-            MachinefamilyData += Machinefamily[newdata] + ',';
-            ModelData += Model[newdata] + ',';
-            insertdateData += referencedate + ',';
-            itemslengthData += items.length + ',';
+        // while (newdata < items.length) {
+        //     newdata++;
+        //     serialmachineData += serialmachine[newdata] + ',';
+        //     fromtimeData += fromtime[newdata] + ',';
+        //     totimeData += totime[newdata] + ',';
+        //     keytimeData += keytime[newdata] + ',';
+        //     drivetimeData += drivetime[newdata] + ',';
+        //     lifttimeData += lifttime[newdata] + ',';
+        //     optimeData += optime[newdata] + ',';
+        //     opratioData += opratio[newdata] + ',';
+        //     driverData += driver[newdata] + ',';
+        //     logoffMethodData += logoffMethod[newdata] + ',';
+        //     MachinefamilyData += Machinefamily[newdata] + ',';
+        //     ModelData += Model[newdata] + ',';
+        //     insertdateData += referencedate + ',';
+        //     itemslengthData += items.length + ',';
 
-        }
+        // }
 
-        var request = require('request');
+        // var request = require('request');
 
-        request.post(
-            'https://www.btmexpertsales.com/btconnect_dbapi/isite_datacenter_project/machineactivity_receive_isite.php',
-            {
-                json: {
-                    serialmachine: serialmachineData,
-                    fromtime: fromtimeData,
-                    totime: totimeData,
-                    keytime: keytimeData,
-                    drivetime: drivetimeData,
-                    lifttime: lifttimeData,
-                    optime: optimeData,
-                    opratio: opratioData,
-                    driver: driverData,
-                    logoffMethod: logoffMethodData,
-                    Machinefamily: MachinefamilyData,
-                    Model: ModelData,
-                    insertdata: insertdateData,
-                    itemslength: itemslengthData,
+        // request.post(
+        //     'https://www.btmexpertsales.com/btconnect_dbapi/isite_datacenter_project/machineactivity_receive_isite.php',
+        //     {
+        //         json: {
+        //             serialmachine: serialmachineData,
+        //             fromtime: fromtimeData,
+        //             totime: totimeData,
+        //             keytime: keytimeData,
+        //             drivetime: drivetimeData,
+        //             lifttime: lifttimeData,
+        //             optime: optimeData,
+        //             opratio: opratioData,
+        //             driver: driverData,
+        //             logoffMethod: logoffMethodData,
+        //             Machinefamily: MachinefamilyData,
+        //             Model: ModelData,
+        //             insertdata: insertdateData,
+        //             itemslength: itemslengthData,
 
-                }
-            },
-            function (error, response, body) {
-                if (!error && response.statusCode == 200) {
-                    console.log(body);
-                }
-            }
-        );
+        //         }
+        //     },
+        //     function (error, response, body) {
+        //         if (!error && response.statusCode == 200) {
+        //             console.log(body);
+        //         }
+        //     }
+        // );
         // var con = mysql.createConnection({
         //     host: "localhost",
         //     user: "supanut",
@@ -287,7 +305,7 @@ async function autoScroll(page, referencedate) {
         //     // }
         //     newdate.setDate(newdate.getDate() - 1);
         // });
-           
+        break;
     }
 }
 
@@ -320,7 +338,7 @@ async function autoScroll(page, referencedate) {
     console.log(inputDate.toLocaleDateString());
     // inputDate.setDate(inputDate.getDate() - 1);
     // console.log(inputDate.toLocaleDateString());
-    let days = 3;
+    let days = 8;
 
     for (let x = 2; x < days; x++) {
 
@@ -340,8 +358,8 @@ async function autoScroll(page, referencedate) {
             await page.keyboard.up('Control');
             await page.keyboard.press('Backspace');
             await page.type('#endDate', currentDate.toLocaleDateString(), { delay: 50 })
-            await page.click('#SiteSelectorAction', { delay: 50 })
-            await page.click('#selectAllSites', { delay: 50 })
+            await page.click('#SiteSelectorAction', { delay: 1000 })
+            // await page.click('#selectAllSites', { delay: 50 })
             await page.click('.dimmedCaption', { delay: 50 })
             await page.click('#searchButton', { delay: 50 })
             // await page.waitForSelector('#searchResultContainer > div.search-top-container > div > div.searchResultSummary > div.total-summary');
@@ -349,7 +367,7 @@ async function autoScroll(page, referencedate) {
 
         else if (x > 1) {
 
-            currentDate.setDate(currentDate.getDate() - 11);
+            currentDate.setDate(currentDate.getDate() - 1);
             console.log(currentDate.toLocaleDateString());
             await page.waitForSelector('body > header > div > div.menu-bar')
             await page.goto('https://toyota-isite.eu/Activity/Machines?menu=Utilization');
@@ -366,8 +384,8 @@ async function autoScroll(page, referencedate) {
             await page.keyboard.up('Control');
             await page.keyboard.press('Backspace');
             await page.type('#endDate', inputDate.toLocaleDateString(), { delay: 50 })
-            await page.click('#SiteSelectorAction', { delay: 50 })
-            await page.click('#selectAllSites', { delay: 50 })
+            await page.click('#SiteSelectorAction', { delay: 1000 })
+            // await page.click('#selectAllSites', { delay: 50 })
             await page.click('.dimmedCaption', { delay: 50 })
             await page.click('#searchButton', { delay: 50 })
             // await page.waitForSelector('#searchResultContainer > div.search-top-container > div > div.searchResultSummary > div.total-summary');

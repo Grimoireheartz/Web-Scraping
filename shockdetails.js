@@ -52,149 +52,235 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
                 countdata++;
                 if (countdata <= items.length) {
                     if (countdata <= 20) {
-                        let element_date = await page.$i(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[1]`, { timeout: 1000 })
+                        let element_date = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[1]/div[3]/span`, { timeout: 1000 })
                         date[i] = await page.evaluate(element_date => element_date.textContent, element_date)
                         console.log(date[i]);
 
-                        let element_driver = await page.waitForSelector(`#shockdetailresult_driver > span`, { timeout: 1000 })
+                        let element_driver = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[1]/div[4]/span`, { timeout: 1000 })
                         driver[i] = await page.evaluate(element_driver => element_driver.textContent, element_driver)
                         console.log(driver[i]);
 
-                        let element_serialmachine = await page.waitForSelector(`#shockdetailresult_device > span > a`, { timeout: 1000 })
+                        let element_serialmachine = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[1]/div[5]/span/a`, { timeout: 1000 })
                         serialmachine[i] = await page.evaluate(element_serialmachine => element_serialmachine.textContent, element_serialmachine)
                         console.log(serialmachine[i]);
 
-                        let element_xthreshold = await page.waitForSelector(`#shockdetailresult_x`, { timeout: 1000 })
+                        let element_xthreshold = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[1]/div[6]`, { timeout: 1000 })
                         xthreshold[i] = await page.evaluate(element_xthreshold => element_xthreshold.textContent, element_xthreshold)
+                        xthreshold[i] = xthreshold[i].replace(/\s/g, '');
                         console.log(xthreshold[i]);
 
-                        let element_ythreshold = await page.waitForSelector(`#shockdetailresult_y`, { timeout: 1000 })
+                        let element_ythreshold = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[1]/div[7]`, { timeout: 1000 })
                         ythreshold[i] = await page.evaluate(element_ythreshold => element_ythreshold.textContent, element_ythreshold)
+                        ythreshold[i] = ythreshold[i].replace(/\s/g, '');
                         console.log(ythreshold[i]);
 
-                        let element_site = await page.waitForSelector(`#shockdetailresult_site`, { timeout: 1000 })
+                        let element_site = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[1]`, { timeout: 1000 })
                         site[i] = await page.evaluate(element_site => element_site.textContent, element_site)
                         site[i] = site[i].replace(/\s/g, '');
                         site[i] = site[i].replace('Site:', '');
                         console.log(site[i]);
 
-                        let element_city = await page.waitForSelector(`#shockdetailresult_city`, { timeout: 1000 })
+                        let element_city = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[3]`, { timeout: 1000 })
                         city[i] = await page.evaluate(element_city => element_city.textContent, element_city)
                         city[i] = city[i].replace(/\s/g, '');
                         city[i] = city[i].replace('City:', '');
                         console.log(city[i]);
 
-                        let element_speed = await page.waitForSelector(`#shockdetailresult_speed`, { timeout: 1000 })
+                        let element_speed = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[9]`, { timeout: 1000 })
                         speed[i] = await page.evaluate(element_speed => element_speed.textContent, element_speed)
                         speed[i] = speed[i].replace(/\s/g, '');
                         speed[i] = speed[i].replace('Speed:', '');
                         console.log(speed[i]);
 
-                        // let element_bdi = await page.waitForSelector(`#shockdetailresult_bdi`, { timeout: 1000 })
-                        // bdi[i] = await page.evaluate(element_bdi => element_bdi.textContent, element_bdi)
-                        // bdi[i] = bdi[i].replace(/\s/g, '');
+                        let element_bdi = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[10]`, { timeout: 1000 })
+                        bdi[i] = await page.evaluate(element_bdi => element_bdi.textContent, element_bdi)
+                        bdi[i] = bdi[i].replace(/\s/g, '');
                         // bdi[i] = bid[i].replace('BDI:', '');
-                        // console.log(bdi[i]);
+                        console.log(bdi[i]);
 
-                        // let element_fleetnumber = await page.waitForSelector(`#shockdetailresult_fleetnumber`, { timeout: 1000 })
-                        // fleetnumber[i] = await page.evaluate(element_fleetnumber => element_fleetnumber.textContent, element_fleetnumber)
-                        // fleetnumber[i] = fleetnumber[i].replace(/\s/g, '');
-                        // fleetnumber[i] = fleetnumber[i].replace('FleetNumber:', '');
-                        // console.log(fleetnumber[i]);
+                        try {
+                            let element_fleetnumber = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[1]/div[${i}]/div[2]/div[16]`, { timeout: 1000 })
+                            fleetnumber[i] = await page.evaluate(element_fleetnumber => element_fleetnumber.textContent, element_fleetnumber)
+                            fleetnumber[i] = fleetnumber[i].replace(/\s/g, '');
+                            fleetnumber[i] = fleetnumber[i].replace('FleetNumber:', '');
+                            console.log(fleetnumber[i]);
+                        }
+                        catch {
+                            let element_fleetnumber = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[1]/div[${i}]/div[2]/div[10]`, { timeout: 1000 })
+                            fleetnumber[i] = await page.evaluate(element_fleetnumber => element_fleetnumber.textContent, element_fleetnumber)
+                            fleetnumber[i] = fleetnumber[i].replace(/\s/g, '');
+                            fleetnumber[i] = fleetnumber[i].replace('FleetNumber:', '');
+                            console.log(fleetnumber[i]);
+                        }
 
-                        // let element_tmhfleetnumber = await page.waitForSelector(`#shockdetailresult_tmhfleetnumber`, { timeout: 1000 })
-                        // tmhfleetnumber[i] = await page.evaluate(element_tmhfleetnumber => element_tmhfleetnumber.textContent, element_tmhfleetnumber)
-                        // tmhfleetnumber[i] = tmhfleetnumber[i].replace(/\s/g, '');
-                        // tmhfleetnumber[i] = tmhfleetnumber[i].replace('TMHFleetNumber:', '');
-                        // console.log(tmhfleetnumber[i]);
 
-                        // let element_machinefamily = await page.waitForSelector(`#shockdetailresult_machinefamily`, { timeout: 1000 })
-                        // machinefamily[i] = await page.evaluate(element_machinefamily => element_machinefamily.textContent, element_machinefamily)
-                        // machinefamily[i] = machinefamily[i].replace(/\s/g, '');
-                        // machinefamily[i] = machinefamily[i].replace('MachineFamily:', '');
-                        // console.log(machinefamily[i]);
+                        try {
+                            let element_tmhfleetnumber = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[17]`, { timeout: 1000 })
+                            tmhfleetnumber[i] = await page.evaluate(element_tmhfleetnumber => element_tmhfleetnumber.textContent, element_tmhfleetnumber)
+                            tmhfleetnumber[i] = tmhfleetnumber[i].replace(/\s/g, '');
+                            tmhfleetnumber[i] = tmhfleetnumber[i].replace('TMHFleetNumber:', '');
+                            console.log(tmhfleetnumber[i]);
+                        } catch {
+                            let element_tmhfleetnumber = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[11]`, { timeout: 1000 })
+                            tmhfleetnumber[i] = await page.evaluate(element_tmhfleetnumber => element_tmhfleetnumber.textContent, element_tmhfleetnumber)
+                            tmhfleetnumber[i] = tmhfleetnumber[i].replace(/\s/g, '');
+                            tmhfleetnumber[i] = tmhfleetnumber[i].replace('TMHFleetNumber:', '');
+                            console.log(tmhfleetnumber[i]);
+                        }
 
-                        // let element_model = await page.waitForSelector(`#shockdetailresult_model`, { timeout: 1000 })
-                        // model[i] = await page.evaluate(element_model => element_model.textContent, element_model)
-                        // model[i] = model[i].replace(/\s/g, '');
-                        // model[i] = model[i].replace('Model:', '');
-                        // console.log(model[i]);
+
+                        try {
+                            let element_machinefamily = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[18]`, { timeout: 1000 })
+                            machinefamily[i] = await page.evaluate(element_machinefamily => element_machinefamily.textContent, element_machinefamily)
+                            machinefamily[i] = machinefamily[i].replace(/\s/g, '');
+                            machinefamily[i] = machinefamily[i].replace('MachineFamily:', '');
+                            console.log(machinefamily[i]);
+                        } catch {
+                            let element_machinefamily = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[12]`, { timeout: 1000 })
+                            machinefamily[i] = await page.evaluate(element_machinefamily => element_machinefamily.textContent, element_machinefamily)
+                            machinefamily[i] = machinefamily[i].replace(/\s/g, '');
+                            machinefamily[i] = machinefamily[i].replace('MachineFamily:', '');
+                            console.log(machinefamily[i]);
+                        }
+
+                        try {
+                            let element_model = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[19]`, { timeout: 1000 })
+                            model[i] = await page.evaluate(element_model => element_model.textContent, element_model)
+                            model[i] = model[i].replace(/\s/g, '');
+                            model[i] = model[i].replace('Model:', '');
+                            console.log(model[i]);
+                        } catch {
+                            let element_model = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div/div[${i}]/div[2]/div[13]`, { timeout: 1000 })
+                            model[i] = await page.evaluate(element_model => element_model.textContent, element_model)
+                            model[i] = model[i].replace(/\s/g, '');
+                            model[i] = model[i].replace('Model:', '');
+                            console.log(model[i]);
+                        }
+
+
 
 
 
                     }
                     else if (countdata > 20) {
                         try {
-                            let element_date = await page.waitForSelector(`#shockdetailresult_date > span`, { timeout: 1000 })
+                            console.log('In counerwerwer loop');
+
+                            let element_date = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[1]/div[3]/span`, { timeout: 1000 })
                             date[countdata] = await page.evaluate(element_date => element_date.textContent, element_date)
                             console.log(date[countdata]);
 
-                            let element_driver = await page.waitForSelector(`#shockdetailresult_driver > span`, { timeout: 1000 })
+                            let element_driver = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[1]/div[4]/span`, { timeout: 1000 })
                             driver[countdata] = await page.evaluate(element_driver => element_driver.textContent, element_driver)
                             console.log(driver[countdata]);
 
-                            let element_serialmachine = await page.waitForSelector(`#shockdetailresult_device > span > a`, { timeout: 1000 })
+                            let element_serialmachine = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[1]/div[5]/span/a`, { timeout: 1000 })
                             serialmachine[countdata] = await page.evaluate(element_serialmachine => element_serialmachine.textContent, element_serialmachine)
                             console.log(serialmachine[countdata]);
 
-                            let element_xthreshold = await page.waitForSelector(`#shockdetailresult_x`, { timeout: 1000 })
+                            let element_xthreshold = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[1]/div[6]`, { timeout: 1000 })
                             xthreshold[countdata] = await page.evaluate(element_xthreshold => element_xthreshold.textContent, element_xthreshold)
+                            xthreshold[countdata] = xthreshold[countdata].replace(/\s/g, '');
                             console.log(xthreshold[countdata]);
 
-                            let element_ythreshold = await page.waitForSelector(`#shockdetailresult_y`, { timeout: 1000 })
+                            let element_ythreshold = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[1]/div[7]`, { timeout: 1000 })
                             ythreshold[countdata] = await page.evaluate(element_ythreshold => element_ythreshold.textContent, element_ythreshold)
+                            ythreshold[countdata] = ythreshold[countdata].replace(/\s/g, '');
                             console.log(ythreshold[countdata]);
 
-                            let element_site = await page.waitForSelector(`#shockdetailresult_site`, { timeout: 1000 })
+                            let element_site = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[1]`, { timeout: 1000 })
                             site[countdata] = await page.evaluate(element_site => element_site.textContent, element_site)
                             site[countdata] = site[countdata].replace(/\s/g, '');
                             site[countdata] = site[countdata].replace('Site:', '');
                             console.log(site[countdata]);
 
-                            let element_city = await page.waitForSelector(`#shockdetailresult_city`, { timeout: 1000 })
+                            let element_city = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[3]`, { timeout: 1000 })
                             city[countdata] = await page.evaluate(element_city => element_city.textContent, element_city)
                             city[countdata] = city[countdata].replace(/\s/g, '');
                             city[countdata] = city[countdata].replace('City:', '');
                             console.log(city[countdata]);
 
-                            let element_speed = await page.waitForSelector(`#shockdetailresult_speed`, { timeout: 1000 })
+                            let element_speed = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[9]`, { timeout: 1000 })
                             speed[countdata] = await page.evaluate(element_speed => element_speed.textContent, element_speed)
                             speed[countdata] = speed[countdata].replace(/\s/g, '');
                             speed[countdata] = speed[countdata].replace('Speed:', '');
                             console.log(speed[countdata]);
 
-                            let element_bdi = await page.waitForSelector(`#shockdetailresult_bdi`, { timeout: 1000 })
+                            let element_bdi = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[10]`, { timeout: 1000 })
                             bdi[countdata] = await page.evaluate(element_bdi => element_bdi.textContent, element_bdi)
                             bdi[countdata] = bdi[countdata].replace(/\s/g, '');
-                            bdi[countdata] = bid[countdata].replace('BDI:', '');
+                            // bdi[countdata] = bid[countdata].replace('BDI:', '');
                             console.log(bdi[countdata]);
 
-                            let element_fleetnumber = await page.waitForSelector(`#shockdetailresult_fleetnumber`, { timeout: 1000 })
-                            fleetnumber[countdata] = await page.evaluate(element_fleetnumber => element_fleetnumber.textContent, element_fleetnumber)
-                            fleetnumber[countdata] = fleetnumber[countdata].replace(/\s/g, '');
-                            fleetnumber[countdata] = fleetnumber[countdata].replace('FleetNumber:', '');
-                            console.log(fleetnumber[countdata]);
 
-                            let element_tmhfleetnumber = await page.waitForSelector(`#shockdetailresult_tmhfleetnumber`, { timeout: 1000 })
-                            tmhfleetnumber[countdata] = await page.evaluate(element_tmhfleetnumber => element_tmhfleetnumber.textContent, element_tmhfleetnumber)
-                            tmhfleetnumber[countdata] = tmhfleetnumber[countdata].replace(/\s/g, '');
-                            tmhfleetnumber[countdata] = tmhfleetnumber[countdata].replace('TMHFleetNumber:', '');
-                            console.log(tmhfleetnumber[countdata]);
+                            try {
+                                let element_fleetnumber = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[16]`, { timeout: 100 })
+                                fleetnumber[countdata] = await page.evaluate(element_fleetnumber => element_fleetnumber.textContent, element_fleetnumber)
+                                fleetnumber[countdata] = fleetnumber[countdata].replace(/\s/g, '');
+                                fleetnumber[countdata] = fleetnumber[countdata].replace('FleetNumber:', '');
+                                console.log(fleetnumber[countdata]);
+                            }
+                            catch {
+                                console.log('Not found fleetnumber selector');
+                                let element_fleetnumber = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[10]`, { timeout: 100 })
+                                fleetnumber[countdata] = await page.evaluate(element_fleetnumber => element_fleetnumber.textContent, element_fleetnumber)
+                                fleetnumber[countdata] = fleetnumber[countdata].replace(/\s/g, '');
+                                fleetnumber[countdata] = fleetnumber[countdata].replace('FleetNumber:', '');
+                                console.log(fleetnumber[countdata]);
+                            }
 
-                            let element_machinefamily = await page.waitForSelector(`#shockdetailresult_machinefamily`, { timeout: 1000 })
-                            machinefamily[countdata] = await page.evaluate(element_machinefamily => element_machinefamily.textContent, element_machinefamily)
-                            machinefamily[countdata] = machinefamily[countdata].replace(/\s/g, '');
-                            machinefamily[countdata] = machinefamily[countdata].replace('MachineFamily:', '');
-                            console.log(machinefamily[countdata]);
+                            try {
+                                let element_tmhfleetnumber = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[17]`, { timeout: 100 })
+                                tmhfleetnumber[countdata] = await page.evaluate(element_tmhfleetnumber => element_tmhfleetnumber.textContent, element_tmhfleetnumber)
+                                tmhfleetnumber[countdata] = tmhfleetnumber[countdata].replace(/\s/g, '');
+                                tmhfleetnumber[countdata] = tmhfleetnumber[countdata].replace('TMHFleetNumber:', '');
+                                console.log(tmhfleetnumber[countdata]);
+                            } catch {
+                                // console.log('Not found  selector');
+                                let element_tmhfleetnumber = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[11]`, { timeout: 100 })
+                                tmhfleetnumber[countdata] = await page.evaluate(element_tmhfleetnumber => element_tmhfleetnumber.textContent, element_tmhfleetnumber)
+                                tmhfleetnumber[countdata] = tmhfleetnumber[countdata].replace(/\s/g, '');
+                                tmhfleetnumber[countdata] = tmhfleetnumber[countdata].replace('TMHFleetNumber:', '');
+                                console.log(tmhfleetnumber[countdata]);
+                            }
 
-                            let element_model = await page.waitForSelector(`#shockdetailresult_model`, { timeout: 1000 })
-                            model[countdata] = await page.evaluate(element_model => element_model.textContent, element_model)
-                            model[countdata] = model[countdata].replace(/\s/g, '');
-                            model[countdata] = model[countdata].replace('Model:', '');
-                            console.log(model[countdata]);
+
+                            try {
+                                let element_machinefamily = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[18]`, { timeout: 100 })
+                                machinefamily[countdata] = await page.evaluate(element_machinefamily => element_machinefamily.textContent, element_machinefamily)
+                                machinefamily[countdata] = machinefamily[countdata].replace(/\s/g, '');
+                                machinefamily[countdata] = machinefamily[countdata].replace('MachineFamily:', '');
+                                console.log(machinefamily[countdata]);
+                            } catch {
+                                let element_machinefamily = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[12]`, { timeout: 100 })
+                                machinefamily[countdata] = await page.evaluate(element_machinefamily => element_machinefamily.textContent, element_machinefamily)
+                                machinefamily[countdata] = machinefamily[countdata].replace(/\s/g, '');
+                                machinefamily[countdata] = machinefamily[countdata].replace('MachineFamily:', '');
+                                console.log(machinefamily[countdata]);
+                            }
+
+                            try {
+                                let element_model = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[19]`, { timeout: 100 })
+                                model[countdata] = await page.evaluate(element_model => element_model.textContent, element_model)
+                                model[countdata] = model[countdata].replace(/\s/g, '');
+                                model[countdata] = model[countdata].replace('Model:', '');
+                                console.log(model[countdata]);
+                            } catch {
+                                let element_model = await page.waitForXPath(`/html/body/div[1]/section/div/div/div[2]/div[2]/div[2]/div[2]/div[${countitemflesh}]/div[${i}]/div[2]/div[13]`, { timeout: 100 })
+                                model[countdata] = await page.evaluate(element_model => element_model.textContent, element_model)
+                                model[countdata] = model[countdata].replace(/\s/g, '');
+                                model[countdata] = model[countdata].replace('Model:', '');
+                                console.log(model[countdata]);
+                            }
+
+
+
+
+                            // console.log('End of get data ');
 
 
                         } catch (error) {
+                            console.log('Error get data');
                             continue;
                         }
 
@@ -312,7 +398,7 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
 
 
 
-    let days = 3;
+    let days = 8;
 
 
     for (let x = 1; x < days; x++) {
@@ -337,13 +423,14 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
             await page.click('#SiteSelectorAction', { delay: 50 })
             console.log("SiteSelectorAction");
             // await page.click('#selectAllSites', { delay: 50 })
+            // await page.click('//*[@id="selectAllSites"]', { delay: 50 })
             console.log("selectAllSites");
             // await page.click('.dimmedCaption', { delay: 50 })
             await page.click('#searchButton', { delay: 50 })
             console.log('pass click');
             await page.waitForSelector('#searchResultContainer > div.search-top-container > div > div.searchResultSummary > div.total-summary');
 
-          
+
 
         }
 
@@ -370,7 +457,7 @@ const scapeinfiniscroll = async (page, itemTargetCount, referencedate) => {
             await page.keyboard.press('Backspace');
             await page.type('#endDate', inputDate.toLocaleDateString(), { delay: 50 })
             await page.click('#SiteSelectorAction', { delay: 50 })
-            await page.click('#selectAllSites', { delay: 50 })
+            // await page.click('#selectAllSites', { delay: 50 })
             // await page.click('.dimmedCaption', { delay: 50 })
             await page.click('#searchButton', { delay: 50 })
             await page.waitForSelector('#searchResultContainer > div.search-top-container > div > div.searchResultSummary > div.total-summary');

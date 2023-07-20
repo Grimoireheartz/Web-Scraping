@@ -13,7 +13,7 @@ async function autoScroll(page){
     while (documentHeight > scrollPosition) {
       window.scrollBy(0, documentHeight)
       await new Promise(resolve => {
-        setTimeout(resolve, 3000)
+        setTimeout(resolve, 2500)
       })
       scrollPosition = documentHeight
       documentHeight = document.body.scrollHeight

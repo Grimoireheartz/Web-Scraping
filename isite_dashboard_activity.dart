@@ -2,10 +2,12 @@ import 'dart:convert';
 
 import 'package:dropdown_search/dropdown_search.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_chart/model/chart_model.dart';
 import 'package:flutter_chart/model/machineactivity.dart';
 import 'package:flutter_chart/model/machineutilize.dart';
 import 'package:flutter_chart/utility/myconstant.dart';
 import 'package:dio/dio.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class Isiteactivity extends StatefulWidget {
   const Isiteactivity({Key? key}) : super(key: key);
@@ -17,18 +19,113 @@ class Isiteactivity extends StatefulWidget {
 class _IsiteactivityState extends State<Isiteactivity> {
   List<MachineActivity> machineactivity = [];
   List<MachineActivity> machineactprocessdata = [];
+  List<MachineActivity> machinefilterdata = [];
   List<MachineUtiliza> machineutilizedata = [];
   List<MachineUtiliza> machineutilize = [];
   List<List<List<String>>> customersitefilter = [];
   bool load = false;
   List<List<List<String>>> selectCusList = [];
   List<String> machinedata = [];
+  List<String> months = [
+    'January',
+    'February',
+    'March',
+    'April',
+    'May',
+    'June',
+    'July',
+    'August',
+    'September',
+    'October',
+    'November',
+    'December'
+  ];
+  List<String> days0fmonth = [
+    '1',
+    '2',
+    '3',
+    '4',
+    '5',
+    '6',
+    '7',
+    '8',
+    '9',
+    '10',
+    '11',
+    '12',
+    '13',
+    '14',
+    '15',
+    '16',
+    '17',
+    '18',
+    '19',
+    '20',
+    '21',
+    '22',
+    '23',
+    '24',
+    '25',
+    '26',
+    '27',
+    '28',
+    '29',
+    '30',
+    '31'
+  ];
+  List<List<String>> dayone = [
+    for (var x = 1; x <= 31; x++) ['${x}', '0']
+  ];
+  List<OPChartModel> opchartData = [];
+
+  String selectedMonth = "January";
 
   @override
   void initState() {
     super.initState();
     ActivityMachine();
     UtilizeMachine();
+    if (selectedMonth == null) {
+      selectedMonth = months[0];
+    }
+  }
+
+  void filterprocess() {
+    machinefilterdata.clear();
+
+    print('Serial is  => ${machinedata.toString()}');
+
+    for (var data in machineactprocessdata) {
+      List<String> dateParts = data.insert_date.split('/');
+      // print('Get data => ${data.serialmachine}');
+      if (machinedata.contains(data.serialmachine.toString())) {
+        print('Match serial => ${data.serialmachine}');
+        setState(() {
+          machinefilterdata.add(data);
+        });
+      }
+    }
+  }
+
+  void filterchart() {
+    dayone.clear();
+    for (var x = 1; x <= 31; x++) {
+      dayone.add(['$x', '0']);
+    }
+
+    for (var data in machineactprocessdata) {
+      List<String> chartdata = data.insert_date.split('/');
+      int chartMonth = int.parse(chartdata[0]);
+      // Check if the data belongs to the selected month
+      if (months.indexOf(selectedMonth) + 1 == chartMonth) {
+        int chartDay = int.parse(chartdata[1]);
+        int opTimeAdded = double.parse(data.optime).toInt();
+        dayone[chartDay - 1][1] =
+            (opTimeAdded + int.parse(dayone[chartDay - 1][1])).toString();
+      }
+    }
+
+    setState(() {});
   }
 
   @override
@@ -94,7 +191,6 @@ class _IsiteactivityState extends State<Isiteactivity> {
                             // String cusselect = '';
 
                             for (var data in value) {
-                              // String cusname = data.split(',')[1];
                               for (var serialmachine in data[1]) {
                                 print(serialmachine);
 
@@ -103,22 +199,34 @@ class _IsiteactivityState extends State<Isiteactivity> {
                                 });
                               }
                             }
-
-                            // setState(() {
-                            //   selectCusList = value;
-
-                            //   machineactprocessdata = machineactivity
-                            //       .where((data) => value.any((item) =>
-                            //           item[1].contains(data.serialmachine)))
-                            //       .toList();
-                            // });
+                            filterprocess();
                           },
-                          // selectedItems: selectCusList,
                           dropdownButtonProps:
                               DropdownButtonProps(isVisible: false),
                         ),
                       ),
-                      ...showdatamachine()
+                      Container(
+                          width: screensize * 0.9,
+                          child: DropdownButton<String>(
+                            value: selectedMonth,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedMonth = newValue!;
+                                filterchart();
+                              });
+                            },
+                            items: months
+                                .map<DropdownMenuItem<String>>((String value) {
+                              return DropdownMenuItem<String>(
+                                value: value,
+                                child: Text(value),
+                              );
+                            }).toList(),
+                          )),
+                      Text(machinedata.toString()),
+                      Text(machinedata.length.toString()),
+                      Container(width: screensize * 3, child: showchartdata()),
+                      ...showdatamachine(),
                     ],
                   ),
                 ),
@@ -127,53 +235,55 @@ class _IsiteactivityState extends State<Isiteactivity> {
     );
   }
 
+  Widget showchartdata() {
+    opchartData.clear();
+    for (var data in machineactprocessdata) {
+      List<String> dateParts = data.insert_date.split('/');
+      int dataDay = int.parse(dateParts[1]);
+      // print('Number of optime =>' + data.optime + '|');
+      // print('Old ${int.parse(dayone[dataDay - 1][1])}');
+      int opTimeAdded = double.parse(data.optime).toInt();
+      // print('New Value => ${double.parse(data.optime)}');
+      dayone[dataDay - 1][1] =
+          (opTimeAdded + int.parse(dayone[dataDay - 1][1])).toString();
+    }
+    // print(dayone);
+    for (var data in dayone) {
+      opchartData.add(OPChartModel(day: data[0], optime: int.parse(data[1])));
+    }
+    // print(opchartData);
+    return SfCartesianChart(
+      primaryXAxis: CategoryAxis(),
+      series: <ChartSeries>[
+        ColumnSeries<OPChartModel, String>(
+            dataSource: opchartData,
+            xValueMapper: (OPChartModel data, _) => data.day,
+            yValueMapper: (OPChartModel data, _) => (data.optime) / 3600),
+      ],
+    );
+  }
+
   List<Widget> showdatamachine() {
     List<Widget> iteamshow = [];
-
-    // for (var dataitems in machineactprocessdata) {
-    //   iteamshow.add(Container(
-    //     child: Text(dataitems.serialmachine),
-    //   ));
-    // }
-    for (var dataitems in machineactprocessdata) {
-      if (machinedata.length > 1) {
-        if (machinedata.contains(dataitems.serialmachine)) {
-          print('${dataitems.serialmachine}');
-
-          iteamshow.add(Container(
-            child: Row(
-              children: [
-                Text(dataitems.serialmachine),
-                Text(' : ' + dataitems.keytime),
-                Text(' : ' + dataitems.drivetime),
-                Text(' : ' + dataitems.lifttime),
-                Text(' : ' + dataitems.optime),
-                Text(' : ' + dataitems.machinefamily),
-                Text(' : ' + dataitems.model),
-              ],
-            ),
-          ));
-        }
-      } else {
-        // print('${dataitems.serialmachine}');
-        // print('${dataitems.keytime}');
-        // print('${dataitems.drivetime}');
-        // print('${dataitems.lifttime}');
-        // print('${dataitems.optime}');
-        iteamshow.add(Container(
-          child: Row(
-            children: [
-              Text(dataitems.serialmachine),
-              Text(' : ' + dataitems.keytime),
-              Text(' : ' + dataitems.drivetime),
-              Text(' : ' + dataitems.lifttime),
-              Text(' : ' + dataitems.optime),
-              Text(' : ' + dataitems.machinefamily),
-              Text(' : ' + dataitems.model),
-            ],
-          ),
-        ));
-      }
+    print('To Get data point and Show !');
+    for (var dataitems in machinefilterdata) {
+      print('test ${dataitems.serialmachine} : ${dataitems.keytime}');
+      print('clear');
+      iteamshow.add(Container(
+        child: Row(
+          children: [
+            Text('Data'),
+            Text(dataitems.serialmachine),
+            Text(' : ' + dataitems.insert_date),
+            Text(' : ' + dataitems.keytime),
+            Text(' : ' + dataitems.drivetime),
+            Text(' : ' + dataitems.lifttime),
+            Text(' : ' + dataitems.optime),
+            Text(' : ' + dataitems.machinefamily),
+            Text(' : ' + dataitems.model),
+          ],
+        ),
+      ));
     }
 
     return iteamshow;
@@ -188,10 +298,9 @@ class _IsiteactivityState extends State<Isiteactivity> {
 
     print(apiPath);
 
-    String cussite = '';
-    String serialsite = '';
     String sitebefore = '';
     String serialbefore = '';
+
     int countsite = -1;
 
     bool firstdata = true;
@@ -203,7 +312,7 @@ class _IsiteactivityState extends State<Isiteactivity> {
           countsite++;
           customersitefilter.add([
             [machineobject.text_cussite],
-            [machineobject.serialmachine]
+            [machineobject.serialmachine],
           ]);
         } else {
           if (serialbefore != machineobject.serialmachine) {
@@ -212,25 +321,16 @@ class _IsiteactivityState extends State<Isiteactivity> {
         }
         sitebefore = machineobject.text_cussite;
         serialbefore = machineobject.serialmachine;
+        machineutilize.add(machineobject);
         // print('Site:' + cussite + ' Serial Number' + serialsite);
-        // print(serialsite);
+
+        // print(serialbefore);
+        // print('operatingtimedata is =>' + operatingtimedata.toString());
       }
-      // machineutilizedata.add(MachineUtiliza(
-      //   text_cussite: cussite,
-      //   serialmachine: serialsite,
-      //   operatingtime: '',
-      //   utilization: '',
-      //   city: '',
-      //   last_update: '',
-      //   owner: '',
-      //   machinefamily: '',
-      //   model: '',
-      //   insert_date: '',
-      // ));
-      // print(cussite);
+
       // print(serialsite);
     }).then((value) {
-      print(customersitefilter);
+      // print(customersitefilter);
 
       setState(() {
         load = false;
@@ -341,6 +441,7 @@ class _IsiteactivityState extends State<Isiteactivity> {
           });
         }
       }
+
       machineactprocessdata.add(
         MachineActivity(
           serialmachine: serialbefore,
@@ -360,7 +461,7 @@ class _IsiteactivityState extends State<Isiteactivity> {
       );
     }).then((value) {
       print(machineactprocessdata);
-
+      filterprocess();
       setState(() {
         load = false;
       });

@@ -20,6 +20,7 @@ class _IsiteactivityState extends State<Isiteactivity> {
   List<MachineActivity> machineactivity = [];
   List<MachineActivity> machineactprocessdata = [];
   List<MachineActivity> machinefilterdata = [];
+  List<MachineActivity> chartData = [];
   List<MachineUtiliza> machineutilizedata = [];
   List<MachineUtiliza> machineutilize = [];
   List<List<List<String>>> customersitefilter = [];
@@ -73,9 +74,7 @@ class _IsiteactivityState extends State<Isiteactivity> {
     '30',
     '31'
   ];
-  List<List<String>> dayone = [
-    for (var x = 1; x <= 31; x++) ['${x}', '0']
-  ];
+
   List<OPChartModel> opchartData = [];
 
   String selectedMonth = "January";
@@ -94,6 +93,7 @@ class _IsiteactivityState extends State<Isiteactivity> {
     machinefilterdata.clear();
 
     print('Serial is  => ${machinedata.toString()}');
+    print('machineactfilter+ ${machineactprocessdata}');
 
     for (var data in machineactprocessdata) {
       List<String> dateParts = data.insert_date.split('/');
@@ -108,24 +108,57 @@ class _IsiteactivityState extends State<Isiteactivity> {
   }
 
   void filterchart() {
-    dayone.clear();
-    for (var x = 1; x <= 31; x++) {
-      dayone.add(['$x', '0']);
-    }
+    // dayone.clear();
+    setState(() {
+      chartData.clear();
+      opchartData.clear();
+    });
 
-    for (var data in machineactprocessdata) {
-      List<String> chartdata = data.insert_date.split('/');
+    List<List<String>> dayone = [
+      for (var x = 1; x <= 31; x++) ['${x}', '0']
+    ];
+    print('Data existing => ${chartData}');
+
+    print('sfsdfsdfsfsdfsd ${(months.indexOf(selectedMonth) + 1)}');
+    print('Machineactprocessdata ===> + ${machineactprocessdata}');
+
+    for (var dataMonthly in machineactprocessdata) {
+      List<String> chartdata = dataMonthly.insert_date.split('/');
       int chartMonth = int.parse(chartdata[0]);
       // Check if the data belongs to the selected month
-      if (months.indexOf(selectedMonth) + 1 == chartMonth) {
-        int chartDay = int.parse(chartdata[1]);
-        int opTimeAdded = double.parse(data.optime).toInt();
-        dayone[chartDay - 1][1] =
-            (opTimeAdded + int.parse(dayone[chartDay - 1][1])).toString();
+      // print(
+      //     'Index ref => ${(months.indexOf(selectedMonth) + 1)} ,${chartMonth} ');
+      if ((months.indexOf(selectedMonth) + 1) == chartMonth) {
+        print('Month seleced ==> ${(months.indexOf(selectedMonth) + 1)}');
+        print('Data month => ${chartMonth}');
+        // int chartDay = int.parse(chartdata[1]);
+        // int opTimeAdded = double.parse(dataMonthly.optime).toInt();
+        // dayone[chartDay - 1][1] =
+        //     (opTimeAdded + int.parse(dayone[chartDay - 1][1])).toString();
+        setState(() {
+          // dayone.add(dataMonthly);
+          chartData.add(dataMonthly);
+        });
+
+        List<String> dateParts = dataMonthly.insert_date.split('/');
+        int dataDay = int.parse(dateParts[1]);
+        // print('Number of optime =>' + data.optime + '|');
+        // print('Old ${int.parse(dayone[dataDay - 1][1])}');
+        int opTimeAdded = double.parse(dataMonthly.optime).toInt();
+        // print('New Value => ${double.parse(data.optime)}');
+        dayone[dataDay - 1][1] =
+            (opTimeAdded + int.parse(dayone[dataDay - 1][1])).toString();
       }
     }
 
-    setState(() {});
+    for (var data in dayone) {
+      setState(() {
+        opchartData.add(OPChartModel(day: data[0], optime: int.parse(data[1])));
+      });
+    }
+
+    print('Data updated => ${chartData}');
+    print('Update chart => ${opchartData}');
   }
 
   @override
@@ -225,41 +258,29 @@ class _IsiteactivityState extends State<Isiteactivity> {
                           )),
                       Text(machinedata.toString()),
                       Text(machinedata.length.toString()),
-                      Container(width: screensize * 3, child: showchartdata()),
+                      Container(
+                          width: screensize * 3,
+                          child:
+
+                              //  showchartdata()
+
+                              SfCartesianChart(
+                            primaryXAxis: CategoryAxis(),
+                            series: <ChartSeries>[
+                              ColumnSeries<OPChartModel, String>(
+                                  dataSource: opchartData,
+                                  xValueMapper: (OPChartModel data, _) =>
+                                      data.day,
+                                  yValueMapper: (OPChartModel data, _) =>
+                                      (data.optime) / 3600),
+                            ],
+                          )),
                       ...showdatamachine(),
                     ],
                   ),
                 ),
               ),
             ),
-    );
-  }
-
-  Widget showchartdata() {
-    opchartData.clear();
-    for (var data in machineactprocessdata) {
-      List<String> dateParts = data.insert_date.split('/');
-      int dataDay = int.parse(dateParts[1]);
-      // print('Number of optime =>' + data.optime + '|');
-      // print('Old ${int.parse(dayone[dataDay - 1][1])}');
-      int opTimeAdded = double.parse(data.optime).toInt();
-      // print('New Value => ${double.parse(data.optime)}');
-      dayone[dataDay - 1][1] =
-          (opTimeAdded + int.parse(dayone[dataDay - 1][1])).toString();
-    }
-    // print(dayone);
-    for (var data in dayone) {
-      opchartData.add(OPChartModel(day: data[0], optime: int.parse(data[1])));
-    }
-    // print(opchartData);
-    return SfCartesianChart(
-      primaryXAxis: CategoryAxis(),
-      series: <ChartSeries>[
-        ColumnSeries<OPChartModel, String>(
-            dataSource: opchartData,
-            xValueMapper: (OPChartModel data, _) => data.day,
-            yValueMapper: (OPChartModel data, _) => (data.optime) / 3600),
-      ],
     );
   }
 
@@ -333,7 +354,7 @@ class _IsiteactivityState extends State<Isiteactivity> {
       // print(customersitefilter);
 
       setState(() {
-        load = false;
+        // load = false;
       });
     });
   }
@@ -460,6 +481,7 @@ class _IsiteactivityState extends State<Isiteactivity> {
         ),
       );
     }).then((value) {
+      print('machineprocess update!!!!');
       print(machineactprocessdata);
       filterprocess();
       setState(() {

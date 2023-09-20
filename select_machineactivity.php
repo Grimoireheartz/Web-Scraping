@@ -20,18 +20,36 @@ if (!$link->set_charset("utf8")) {
 
 $filterdate = "STR_TO_DATE(insert_date,'%m/%d/%Y') DESC";
 
+$serial_get = json_decode($_POST['serial_ref']);
+
+$serialmachine = '';
+foreach ($serial_get as $val) {
+    $serialmachine .= "serialmachine = '" . $val . "' or ";
+}
+
+
+
+
+
+$serialmachine = substr($serialmachine, 0, -4);
+
+// echo 'Reply activity' . $serialmachine;
 
 
 $sql = "SELECT serialmachine,fromtime,totime,keytime,drivetime,lifttime,optime,opratio,driver,logoffMethod,machinefamily,model,insert_date
                 FROM bsc_isite_machineactivity 
-               ORDER BY serialmachine ASC,$filterdate 
+                WHERE $serialmachine
+               ORDER BY serialmachine ASC,$filterdate
             ";
 
 
-// $sql = "SELECT serialmachine,machinefamily, SUM(keytime) AS keytime , SUM(drivetime) AS drivetime , SUM(lifttime) AS lifttime,SUM(optime) AS optime,SUM(opratio) AS opratio,insert_date
-//         FROM bsc_isite_machineactivity
-//         GROUP BY serialmachine
-//         ";
+
+
+
+// // $sql = "SELECT serialmachine,machinefamily, SUM(keytime) AS keytime , SUM(drivetime) AS drivetime , SUM(lifttime) AS lifttime,SUM(optime) AS optime,SUM(opratio) AS opratio,insert_date
+// //         FROM bsc_isite_machineactivity
+// //         GROUP BY serialmachine
+// //         ";
 
 $result = mysqli_query($link, $sql);
 
@@ -43,9 +61,7 @@ if ($result) {
 } else {
     echo 'error';
 }
-// } else {
-//     echo 'error';
-// }
+
 
 
 

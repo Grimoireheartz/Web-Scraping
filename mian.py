@@ -26,15 +26,22 @@ button.click()
 button = driver.find_element(By.XPATH, '//*[@id="selectAllSites"]/a')
 button.click()
 
-time.sleep(5)
+#time.sleep(5)
 
 driver.get("https://toyota-isite.eu/Diagnostics/Machines?menu=Admin")
 
 button = driver.find_element(By.XPATH, '//*[@id="searchButton"]')
 button.click()
 
+#time.sleep(50)
 
-time.sleep(20)
+element = driver.find_element(By.TAG_NAME, 'body')
+
+
+while True:
+    element.send_keys(Keys.PAGE_DOWN)
+    time.sleep(3)
+
 #print(driver.page_source)
 
 #driver.quit()

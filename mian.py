@@ -79,8 +79,8 @@ body = driver.find_element(By.TAG_NAME, 'body')
 index = 0 
 time.sleep(3)
 
-#while True:
-for i in range(10):
+while True:
+#for i in range(10):
 
     body.send_keys(Keys.PAGE_DOWN)
 
@@ -103,8 +103,9 @@ for i in range(10):
             driver.execute_script("window.open(arguments[0], '_blank');", error.get_attribute("href"))
             time.sleep(3)
             driver.switch_to.window(driver.window_handles[-1])
-            time.sleep(5)
+            time.sleep(3)
 
+            driver.execute_script("window.scrollBy(0, 200);")
             svg_element = driver.find_element(By.CSS_SELECTOR, "#reportGenerator > svg")
             actions = ActionChains(driver)
             actions.move_to_element(svg_element).click().perform()

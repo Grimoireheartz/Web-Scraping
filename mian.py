@@ -119,7 +119,7 @@ while True:
     index += 1
 
     time.sleep(3)
-
+"""
     scrolled = False
     while not scrolled:
         try:
@@ -128,4 +128,4 @@ while True:
         except Exception as e:
             print("Error occurred while scrolling:", e)
             time.sleep(1)
-
+"""

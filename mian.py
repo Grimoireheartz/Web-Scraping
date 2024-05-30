@@ -86,10 +86,22 @@ while True:
     print("enter while loop !")
 
     xpath_expression = '//*[@id="resultItems"]/div[1]/div[{}]/div[1]/div[8]/a'.format(index + 1)
+    row_expression = '//*[@id="resultItems"]/div[1]/div[{}]/div[1]'.format(index + 1)
 
     errors = driver.find_elements(By.XPATH, xpath_expression)
+    row_elements   = driver.find_elements(By.XPATH, row_expression)
 
     print("INDEX = ", index)
+
+
+    row_style = row_elements[0]
+    
+    if row_style.get_attribute("style") == "display: none;" or not row_style.is_displayed() or row_style.get_attribute("style").find("opacity: 0.4") != -1:
+        print(f"Row {index + 1} has been removed or hidden.")
+        index += 1
+        continue
+   
+
     for error in errors:
         print("Errors =", error.text)
     
@@ -98,22 +110,22 @@ while True:
 
     for error in errors: 
         if int(error.text) > 0:
-            ActionChains(driver).context_click(error).perform()
-            driver.execute_script("window.open(arguments[0], '_blank');", error.get_attribute("href"))
-            time.sleep(3)
-            driver.switch_to.window(driver.window_handles[-1])
-            time.sleep(3)
+                ActionChains(driver).context_click(error).perform()
+                driver.execute_script("window.open(arguments[0], '_blank');", error.get_attribute("href"))
+                time.sleep(3)
+                driver.switch_to.window(driver.window_handles[-1])
+                time.sleep(3)
 
-            driver.execute_script("window.scrollBy(0, 200);")
-            svg_element = driver.find_element(By.CSS_SELECTOR, "#reportGenerator > svg")
-            actions = ActionChains(driver)
-            actions.move_to_element(svg_element).click().perform()
+                driver.execute_script("window.scrollBy(0, 200);")
+                svg_element = driver.find_element(By.CSS_SELECTOR, "#reportGenerator > svg")
+                actions = ActionChains(driver)
+                actions.move_to_element(svg_element).click().perform()
 
-            time.sleep(10)
-            driver.close()
-            driver.switch_to.window(driver.window_handles[0])
-                #body.send_keys(Keys.PAGE_DOWN)
-           
+                time.sleep(10)
+                driver.close()
+                driver.switch_to.window(driver.window_handles[0])
+                    #body.send_keys(Keys.PAGE_DOWN)
+            
 
 
     index += 1

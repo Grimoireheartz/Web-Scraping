@@ -10,7 +10,7 @@ driver = webdriver.Chrome()
 
 driver.get("https://toyota-isite.eu")
 
-time.sleep(5)
+#time.sleep(5)
 
 username_field = driver.find_element(By.XPATH, '//*[@id="input_1"]')
 username_field.send_keys("external\exsuyat1")
@@ -69,18 +69,17 @@ time.sleep(5)
 
 driver.get("https://toyota-isite.eu/Diagnostics/Machines?menu=Admin")
 
+
 button = driver.find_element(By.XPATH, '//*[@id="searchButton"]')
 button.click()
-
-
 time.sleep(45)
+
+
 body = driver.find_element(By.TAG_NAME, 'body')
-#body.send_keys(Keys.PAGE_DOWN)
 index = 0 
 time.sleep(3)
 
 while True:
-#for i in range(10):
 
     body.send_keys(Keys.PAGE_DOWN)
 
@@ -113,19 +112,13 @@ while True:
             time.sleep(10)
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
-            body.send_keys(Keys.PAGE_DOWN)
-         
+                #body.send_keys(Keys.PAGE_DOWN)
+           
+
 
     index += 1
 
     time.sleep(3)
-"""
-    scrolled = False
-    while not scrolled:
-        try:
-            body.send_keys(Keys.PAGE_DOWN)
-            scrolled = True
-        except Exception as e:
-            print("Error occurred while scrolling:", e)
-            time.sleep(1)
-"""
+
+    WebDriverWait(driver, 10).until(EC.presence_of_element_located((By.XPATH, xpath_expression)))
+    time.sleep(3)

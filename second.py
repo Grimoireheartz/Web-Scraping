@@ -10,7 +10,7 @@ driver = webdriver.Chrome()
 
 driver.get("https://toyota-isite.eu")
 
-time.sleep(5)
+#time.sleep(5)
 
 username_field = driver.find_element(By.XPATH, '//*[@id="input_1"]')
 username_field.send_keys("external\exsuyat1")
@@ -74,15 +74,12 @@ button = driver.find_element(By.XPATH, '//*[@id="searchButton"]')
 button.click()
 time.sleep(45)
 
-#WebDriverWait(driver, 45).until(EC.element_to_be_clickable((By.XPATH, '//*[@id="searchButton"]'))).click()
 
 body = driver.find_element(By.TAG_NAME, 'body')
-#body.send_keys(Keys.PAGE_DOWN)
 index = 0 
 time.sleep(3)
 
 while True:
-#for i in range(10):
 
     body.send_keys(Keys.PAGE_DOWN)
 
@@ -115,8 +112,9 @@ while True:
             time.sleep(10)
             driver.close()
             driver.switch_to.window(driver.window_handles[0])
-            #body.send_keys(Keys.PAGE_DOWN)
-         
+                #body.send_keys(Keys.PAGE_DOWN)
+           
+
 
     index += 1
 
